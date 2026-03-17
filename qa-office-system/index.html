@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Q-Nekt | UPOU Quality Assurance System</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css"/>
+
+  <!--
+    HTML Templates (JS template literals, no fetch required)
+    ├── shell.js          University header, top nav, sidebar, toast
+    └── pages/
+        ├── dashboard.js  Dashboard page
+        ├── data-entry.js Data Entry page  (entry cards · database · activity log)
+        ├── reports.js    Reports page     (report types · recent reports log)
+        └── historical.js Historical Data page
+  -->
+  <script src="shell.js"></script>
+  <script src="pages/dashboard.js"></script>
+  <script src="pages/data-entry.js"></script>
+  <script src="pages/reports.js"></script>
+  <script src="pages/historical.js"></script>
+
+  <!--
+    Application Logic
+    app.js   — all JS modules: navigation, data entry, database,
+                activity log, reports hub, notifications
+    loader.js — injects templates into DOM slots, calls initQNekt()
+                (must be last so all templates and app.js are ready)
+  -->
+  <script src="app.js"></script>
+  <script src="loader.js"></script>
+</head>
+<body>
+
+  <!-- University header -->
+  <div id="slot-header"></div>
+
+  <!-- Top navigation bar -->
+  <div id="slot-nav"></div>
+
+  <!-- App body: sidebar + main content -->
+  <div class="app-body">
+
+    <!-- Sidebar -->
+    <div id="slot-sidebar"></div>
+
+    <!-- Main content area -->
+    <main class="main">
+      <div id="slot-dashboard"></div>
+      <div id="slot-data-entry"></div>
+      <div id="slot-reports"></div>
+      <div id="slot-historical"></div>
+    </main>
+
+  </div>
+
+  <!-- Notification toast -->
+  <div id="slot-notif"></div>
+
+</body>
+</html>

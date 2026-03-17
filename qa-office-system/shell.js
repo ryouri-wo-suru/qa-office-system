@@ -1,0 +1,117 @@
+/* ================================================================
+   Q-Nekt · Shell Templates
+   ================================================================
+   Exports: HEADER_HTML · NAV_HTML · SIDEBAR_HTML · NOTIF_HTML
+   ================================================================ */
+
+/* University header ─────────────────────────────────────────── */
+const HEADER_HTML = /* html */`
+<!-- ════════════════════════════════════════════════════════════
+     SHELL: UNIVERSITY HEADER
+     ════════════════════════════════════════════════════════════ -->
+<!-- UNIVERSITY HEADER -->
+<header class="site-header">
+  <div class="header-brand">
+    <div class="header-text-group">
+      <div class="header-univ-name">University of the Philippines</div>
+      <div class="header-title">OPEN <span>UNIVERSITY</span></div>
+      <div class="header-subtitle">Quality Assurance Office</div>
+    </div>
+  </div>
+  <div class="header-qnekt">
+    <div class="qnekt-badge">
+      <div class="qnekt-badge-sub">Data Collection &amp; Report System</div>
+    </div>
+  </div>
+</header>
+`;
+
+/* Top navigation bar ────────────────────────────────────────── */
+const NAV_HTML = /* html */`
+<!-- ════════════════════════════════════════════════════════════
+     SHELL: TOP NAVIGATION
+     ════════════════════════════════════════════════════════════ -->
+<!-- NAVIGATION -->
+<nav class="site-nav">
+  <button class="site-nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Dashboard
+  </button>
+  <button class="site-nav-item" data-page="data-entry" onclick="showPage('data-entry',this)">
+    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Data Entry
+  </button>
+  <button class="site-nav-item" data-page="reports" onclick="showPage('reports',this)">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    Reports
+  </button>
+  <button class="site-nav-item" data-page="historical" onclick="showPage('historical',this)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Historical Data
+  </button>
+</nav>
+`;
+
+/* Sidebar: nav links, data sources, academic year ───────────── */
+const SIDEBAR_HTML = /* html */`
+<!-- ── SIDEBAR ────────────────────────────────────────────── -->
+  <aside class="sidebar">
+<!-- SIDEBAR -->
+  
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navigation</div>
+      <div class="sidebar-item active" data-page="dashboard" onclick="showPage('dashboard',null)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="sidebar-item" data-page="data-entry" onclick="showPage('data-entry',null)">
+        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Data Entry
+      </div>
+      <div class="sidebar-item" data-page="reports" onclick="showPage('reports',null)">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Reports
+      </div>
+      <div class="sidebar-item" data-page="historical" onclick="showPage('historical',null)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Historical Data
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Data Sources</div>
+    </div>
+    <div class="sidebar-sources">
+      <div class="source-item"><div class="source-dot" id="dot-our"></div> OUR <span class="source-status" id="status-our">Not connected</span></div>
+      <div class="source-item"><div class="source-dot" id="dot-fos"></div> FoS <span class="source-status" id="status-fos">Not connected</span></div>
+      <div class="source-item"><div class="source-dot" id="dot-osa"></div> OSA <span class="source-status" id="status-osa">Not connected</span></div>
+      <div class="source-item"><div class="source-dot" id="dot-pivot"></div> PIVOT / HR <span class="source-status" id="status-pivot">Not connected</span></div>
+      <div class="source-item"><div class="source-dot" id="dot-rne"></div> R&amp;E Personnel <span class="source-status" id="status-rne">Not connected</span></div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label" id="sidebar-ay">AY ——</div>
+      <div style="font-size:12px;color:var(--muted);padding:0 8px;" id="sidebar-sem">—</div>
+      <div style="font-size:11px;color:var(--muted);padding:4px 8px;">No sync scheduled</div>
+    </div>
+`;
+
+/* Notification toast ────────────────────────────────────────── */
+const NOTIF_HTML = /* html */`
+<!-- ════════════════════════════════════════════════════════════
+     SHELL: NOTIFICATION TOAST
+     ════════════════════════════════════════════════════════════ -->
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"><div class="notif-dot"></div><span id="notif-text"></span></div>
+
+<!-- ================================================================
+     JAVASCRIPT
+     Modules: [1] Data Source Status  [2] Initialisation  [3] Navigation
+              [4] Data Panel Tabs     [5] Database         [6] Activity Log
+              [7] Data Entry Hub      [8] Reports          [9] Notifications
+     ================================================================ -->
+`;
