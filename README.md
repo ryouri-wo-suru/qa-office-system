@@ -2,6 +2,8 @@
 
 A browser-based data collection and report generation system for the Quality Assurance Office of the University of the Philippines Open University (UPOU).
 
+To run the system, open `index.html` in any modern browser.
+
 ---
 
 ## File Overview
