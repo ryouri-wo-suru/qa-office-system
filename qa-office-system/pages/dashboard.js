@@ -1,5 +1,19 @@
 /* ================================================================
    Q-Nekt · Page Template: Dashboard
+   ================================================================
+   The Dashboard is the first page users see. It gives a high-level
+   overview of the system through four metric cards (Total Students,
+   Faculty Members, Active Researchers, Reports Generated), a Data
+   Flow Architecture diagram showing how data moves from source
+   systems through Q-Nekt into QA reports, and two status cards
+   (Data Collection Progress, Recent Activity).
+
+   All metric values show "—" until a backend data source is
+   connected. The layout and structure are fully ready.
+
+   This file exports a single const (DASHBOARD_HTML) containing the full
+   HTML for this page. loader.js injects it into the matching slot
+   in index.html. All interactive behaviour is handled by app.js.
    ================================================================ */
 
 const DASHBOARD_HTML = /* html */`

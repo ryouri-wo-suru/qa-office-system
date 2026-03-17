@@ -1,10 +1,27 @@
 /* ================================================================
    Q-Nekt · Shell Templates
    ================================================================
-   Exports: HEADER_HTML · NAV_HTML · SIDEBAR_HTML · NOTIF_HTML
+   "Shell" refers to the persistent chrome that surrounds every page:
+   the university header, the top navigation bar, the sidebar, and
+   the notification toast. These elements never change between pages,
+   so they live here separately from the page-specific content.
+
+   Exports (used by loader.js to inject into index.html slots):
+     HEADER_HTML  — University header: UPOU branding + badge
+     NAV_HTML     — Top navigation bar: page links
+     SIDEBAR_HTML — Left sidebar: nav items, data source dots,
+                    academic year / semester label
+     NOTIF_HTML   — Toast notification element (hidden by default;
+                    shown briefly after each user action)
+
+   To update the sidebar navigation links, edit SIDEBAR_HTML.
+   To add a new top-nav page link, edit NAV_HTML.
    ================================================================ */
 
-/* University header ─────────────────────────────────────────── */
+/* University header ─────────────────────────────────────────────
+   Contains: UPOU branding (university name, subtitle) and the
+   "Data Collection & Report System" badge on the right.
+   ─────────────────────────────────────────────────────────────── */
 const HEADER_HTML = /* html */`
 <!-- ════════════════════════════════════════════════════════════
      SHELL: UNIVERSITY HEADER
@@ -26,7 +43,11 @@ const HEADER_HTML = /* html */`
 </header>
 `;
 
-/* Top navigation bar ────────────────────────────────────────── */
+/* Top navigation bar ────────────────────────────────────────────
+   Contains: Dashboard, Data Entry, Reports, Historical Data tabs.
+   onclick="showPage('...')" wires each button to the navigation
+   module in app.js.
+   ─────────────────────────────────────────────────────────────── */
 const NAV_HTML = /* html */`
 <!-- ════════════════════════════════════════════════════════════
      SHELL: TOP NAVIGATION
@@ -52,7 +73,11 @@ const NAV_HTML = /* html */`
 </nav>
 `;
 
-/* Sidebar: nav links, data sources, academic year ───────────── */
+/* Sidebar ────────────────────────────────────────────────────────
+   Contains: navigation items (mirrors the top nav), data source
+   status indicators (OUR, FoS, OSA, PIVOT/HR, R&E Personnel),
+   and the academic year / semester label updated by initQNekt().
+   ─────────────────────────────────────────────────────────────── */
 const SIDEBAR_HTML = /* html */`
 <!-- ── SIDEBAR ────────────────────────────────────────────── -->
   <aside class="sidebar">
@@ -100,7 +125,10 @@ const SIDEBAR_HTML = /* html */`
     </div>
 `;
 
-/* Notification toast ────────────────────────────────────────── */
+/* Notification toast ────────────────────────────────────────────
+   A small pop-up at the bottom-right of the screen. Hidden by
+   default; shown by notify() in app.js after user actions.
+   ─────────────────────────────────────────────────────────────── */
 const NOTIF_HTML = /* html */`
 <!-- ════════════════════════════════════════════════════════════
      SHELL: NOTIFICATION TOAST

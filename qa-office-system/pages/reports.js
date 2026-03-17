@@ -1,5 +1,22 @@
 /* ================================================================
    Q-Nekt · Page Template: Reports
+   ================================================================
+   The Reports page lets QA staff generate standardised reports
+   from the collected data. It has two tabs:
+
+     Report Types   — Five report cards. Clicking "Generate Report"
+                      opens a preview panel showing the report
+                      structure with export buttons (PDF, Excel,
+                      CSV). All values show "—" until data is
+                      connected.
+
+     Recent Reports — A log of all reports generated this session,
+                      showing the report type, export format chosen,
+                      and timestamp. Filterable by type and format.
+
+   This file exports a single const (REPORTS_HTML) containing the full
+   HTML for this page. loader.js injects it into the matching slot
+   in index.html. All interactive behaviour is handled by app.js.
    ================================================================ */
 
 const REPORTS_HTML = /* html */`

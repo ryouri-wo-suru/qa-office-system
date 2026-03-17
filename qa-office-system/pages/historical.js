@@ -1,5 +1,18 @@
 /* ================================================================
    Q-Nekt · Page Template: Historical Data
+   ================================================================
+   The Historical Data page lets users browse and compare records
+   across past academic years. It includes filter controls (academic
+   year, category, keyword search) and a summary table showing
+   student, faculty, researcher, scholarship, and report counts per
+   academic year.
+
+   All data shows empty states until historical records have been
+   entered and archived in the system.
+
+   This file exports a single const (HISTORICAL_HTML) containing the full
+   HTML for this page. loader.js injects it into the matching slot
+   in index.html. All interactive behaviour is handled by app.js.
    ================================================================ */
 
 const HISTORICAL_HTML = /* html */`

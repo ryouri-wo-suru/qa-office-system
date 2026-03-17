@@ -1,5 +1,27 @@
 /* ================================================================
    Q-Nekt · Page Template: Data Entry
+   ================================================================
+   The Data Entry page is the main data management area. It has
+   three tabs inside a hub view:
+
+     Data Entry     — Six category cards. Clicking "Enter Data →"
+                      on any card opens a dedicated form for that
+                      category (Faculty, Student, Research, etc.).
+                      Each form has a "← Back" button to return.
+
+     Database       — Shows the stored records in four searchable,
+                      filterable tables (Faculty, Students,
+                      Scholarships, Research). The "View Records"
+                      button on each card links directly here.
+
+     Recent Activity — A timestamped log of all saves, imports,
+                       exports, and batch updates performed during
+                       the current session. Filterable by action
+                       type and data category.
+
+   This file exports a single const (DATA_ENTRY_HTML) containing the full
+   HTML for this page. loader.js injects it into the matching slot
+   in index.html. All interactive behaviour is handled by app.js.
    ================================================================ */
 
 const DATA_ENTRY_HTML = /* html */`

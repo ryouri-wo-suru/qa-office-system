@@ -1,14 +1,27 @@
 /* ================================================================
    Q-Nekt · UPOU Quality Assurance System · Stylesheet
    ================================================================
+   All styling for the Q-Nekt QA system is in this single file,
+   organised into six sections so it is easy to find and edit
+   specific parts of the design.
+
+   Colour palette (defined as CSS variables in Section 1):
+     --bg / --bg2 / --bg3   Dark backgrounds (lightest to darkest)
+     --header               UPOU maroon  #8a1538
+     --gold                 Accent gold  #f6ac1d
+     --green / --green2     Success green
+     --muted                Subdued text #a0a4b5
+
    Sections
-     [1] TOKENS & RESET    — CSS variables, resets, base body
-     [2] SHELL             — Header, top nav, sidebar
-     [3] SHARED COMPONENTS — Buttons, forms, tables, badges, tabs, toast
-     [4] DASHBOARD         — Hero, metric cards, data-flow, progress
-     [5] DATA ENTRY & REPORTS  — Hub tabs, entry cards, activity log,
-                                  report cards, report preview
-     [6] SCROLLBAR
+     [1] TOKENS & RESET    — CSS variables, box-sizing reset, body
+     [2] SHELL             — Header, top nav bar, sidebar layout
+     [3] SHARED COMPONENTS — Buttons, form inputs, tables, badges,
+                              pill tabs, notification toast
+     [4] DASHBOARD         — Page hero, metric cards, data-flow
+                              diagram, progress bars
+     [5] DATA ENTRY & REPORTS — Hub tab bar, entry cards, activity
+                                 log items, report cards, preview
+     [6] SCROLLBAR         — Custom thin scrollbar styling
    ================================================================ */
 
 /* ================================================================
@@ -29,6 +42,11 @@
 
 /* ----------------------------------------------------------------
    [1] TOKENS & RESET
+   ----------------------------------------------------------------
+   CSS custom properties (variables) used throughout the stylesheet.
+   Change a colour here and it updates everywhere automatically.
+   Also resets browser default margins/padding and sets the base
+   body layout (full viewport height, no overflow).
    ---------------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -58,6 +76,10 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 
 /* ----------------------------------------------------------------
    [2] SHELL  —  header · top nav · sidebar
+   ----------------------------------------------------------------
+   Styles the persistent chrome that wraps every page:
+   the UPOU university header bar, the top navigation tab strip,
+   and the left sidebar (nav items, source dots, AY label).
    ---------------------------------------------------------------- */
 .topbar { background: var(--bg3); height: 36px; display: flex; align-items: center; justify-content: flex-end; padding: 0 2rem; gap: 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
 .topbar a { color: var(--muted); font-size: 13px; text-decoration: none; transition: color 0.2s; }
@@ -106,6 +128,11 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 
 /* ----------------------------------------------------------------
    [3] SHARED COMPONENTS  —  buttons · forms · tables · badges · tabs · toast
+   ----------------------------------------------------------------
+   Reusable styles used across multiple pages:
+   .btn-* variants, input/select/textarea, table cells,
+   badge pills, local tab strips (.tabs-local), and the
+   notification toast (.notif).
    ---------------------------------------------------------------- */
 .btn { padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; transition: all 0.2s; display: inline-flex; align-items: center; gap: 7px; }
 .btn-primary { background: var(--header); color: #fff; }
@@ -153,6 +180,10 @@ tbody tr:hover td { background: rgba(246,172,29,0.03); }
 
 /* ----------------------------------------------------------------
    [4] DASHBOARD  —  hero · metrics · data-flow · progress
+   ----------------------------------------------------------------
+   Styles specific to the Dashboard page:
+   .page-hero title/subtitle, .metric-card grid, the data-flow
+   diagram columns and arrows, and progress bar items.
    ---------------------------------------------------------------- */
 .page-hero { margin-bottom: 1.8rem; }
 .page-hero-title { font-family: 'Playfair Display', serif; font-size: 26px; color: #ffffff; font-weight: 700; }
@@ -258,6 +289,11 @@ tbody tr:hover td { background: rgba(246,172,29,0.03); }
 
 /* ----------------------------------------------------------------
    [5] DATA ENTRY & REPORTS  —  hub tabs · cards · activity log · report grid
+   ----------------------------------------------------------------
+   Styles for the Data Entry and Reports pages:
+   .de-hub-tab bar, .de-card entry cards, activity log items
+   (.act-*), report type cards (.rpt-card), and the report
+   preview / document panel.
    ---------------------------------------------------------------- */
 .de-hub-tabs { display:flex; gap:4px; margin-bottom:1.6rem; border-bottom:1px solid var(--border2); padding-bottom:0; }
 .de-hub-tab { display:flex; align-items:center; gap:7px; padding:9px 18px; background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-1px; color:var(--muted); font-size:13px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.18s; }
@@ -382,6 +418,10 @@ tbody tr:hover td { background: rgba(246,172,29,0.03); }
 
 /* ----------------------------------------------------------------
    [6] SCROLLBAR
+   ----------------------------------------------------------------
+   Replaces the browser default scrollbar with a slim dark one
+   that matches the overall dark theme. The thumb turns gold on
+   hover to match the accent colour.
    ---------------------------------------------------------------- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg3); }
