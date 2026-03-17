@@ -402,6 +402,23 @@ function openDataEntry(panel) {
   if (target) target.classList.add('active');
 }
 
+/**
+ * Switches between the four tabs on the Historical Data page:
+ * Student Data, Faculty Data, Research Data, Retention Rates.
+ * @param {string} tab - 'student' | 'faculty' | 'research' | 'retention'
+ * @param {HTMLElement} btn - The tab button that was clicked
+ */
+function switchHistTab(tab, btn) {
+  // Update tab button highlight
+  document.querySelectorAll('.hist-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Show the matching panel, hide the others
+  document.querySelectorAll('.hist-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('hist-' + tab);
+  if (panel) panel.classList.add('active');
+}
+
+
 /** Returns from the data entry form back to the hub view. */
 function closeDataEntry() {
   document.getElementById('de-form').style.display = 'none';
