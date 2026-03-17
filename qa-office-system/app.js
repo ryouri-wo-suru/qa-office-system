@@ -113,8 +113,9 @@ function initQNekt() {
    ================================================================ */
 
 /**
- * Shows the selected page and highlights its nav item in both the
- * top nav bar and the sidebar.
+ * Shows the selected page, highlights its nav item in both the top
+ * nav bar and the sidebar, and resets the page to its first tab so
+ * the landing state is always clean and the first tab is highlighted.
  * @param {string} id - Page ID: 'dashboard' | 'data-entry' | 'reports' | 'historical'
  */
 function showPage(id) {
@@ -132,6 +133,35 @@ function showPage(id) {
   document.querySelectorAll('.sidebar-item[data-page]').forEach(s => {
     s.classList.toggle('active', s.dataset.page === id);
   });
+
+  // Reset the landing tab for pages that have hub tabs
+  if (id === 'data-entry') {
+    // Always land on the "Data Entry" hub tab and show the hub (not a form)
+    const firstTab = document.querySelector('#de-hub .de-hub-tab');
+    if (firstTab) switchHubTab('entry', firstTab);
+    // Ensure we're showing the hub, not a form
+    const hub  = document.getElementById('de-hub');
+    const form = document.getElementById('de-form');
+    if (hub)  hub.style.display  = 'block';
+    if (form) form.style.display = 'none';
+  }
+
+  if (id === 'reports') {
+    // Always land on the "Report Types" tab and show the hub (not a preview)
+    const firstTab = document.querySelector('#page-reports .de-hub-tab');
+    if (firstTab) switchRptTab('types', firstTab);
+    // Ensure we're showing the hub, not a report preview
+    const hub     = document.getElementById('rpt-hub');
+    const preview = document.getElementById('rpt-preview');
+    if (hub)     hub.style.display     = 'block';
+    if (preview) preview.style.display = 'none';
+  }
+
+  if (id === 'historical') {
+    // Always land on the first "Student Data" tab
+    const firstTab = document.querySelector('.hist-tab');
+    if (firstTab) switchHistTab('student', firstTab);
+  }
 }
 
 // Legacy shim — kept so any old inline onclick="setSidebarActive(...)" calls
@@ -174,23 +204,28 @@ function showDataTab(tab, btn) {
    to the selected table (e.g. "On Leave" only applies to Faculty).
    ================================================================ */
 
-// Status filter options per database table.
-// The first entry in each array is always the "show all" default.
+// Status filter options per database tab.
+// Each list matches the Status field options in the corresponding data entry form.
 const DB_STATUS_OPTIONS = {
-  fac: ['All Status', 'Active', 'On Leave', 'Retired', 'Resigned'],
-  stu: ['All Status', 'Regular', 'Irregular', 'Cross Enrollee', 'Returnee', 'LOA'],
-  sch: ['All Status', 'Active', 'On Probation', 'Terminated', 'Completed'],
-  res: ['All Status', 'Ongoing', 'Completed', 'On Hold', 'Proposed'],
+  fac:   ['All Status', 'Regular', 'Contractual', 'Part-time', 'Visiting'],        // Employment Status from Faculty form
+  stu:   ['All Status', 'Regular', 'Irregular', 'Cross Enrollee', 'Returnee'],     // Enrollment Status from Student form
+  fload: ['All Status', '1st Semester', '2nd Semester', 'Summer'],                 // Semester from Faculty Load form
+  sload: ['All Status', 'Regular Load', 'Overload', 'Underload'],                  // Load Status from Student Load form
+  res:   ['All Status', 'Ongoing', 'Completed', 'On Hold', 'Proposed'],            // Status from Research form
+  sch:   ['All Status', 'Active', 'Terminated', 'On Probation', 'Completed'],      // Status from Scholarship form
 };
 
 /**
  * Switches the visible database table and refreshes the status filter.
- * @param {string} tab - Table key: 'fac' | 'stu' | 'sch' | 'res'
+ * Also updates currentDbTab so the toolbar buttons know which tab is active.
+ * @param {string} tab - Table key: 'fac' | 'stu' | 'fload' | 'sload' | 'res' | 'sch'
  * @param {HTMLElement} btn - The tab button that was clicked
  */
 function showDbTab(tab, btn) {
+  currentDbTab = tab;
+
   // Show only the selected table, hide the others
-  ['fac', 'stu', 'sch', 'res'].forEach(t => {
+  ['fac', 'stu', 'fload', 'sload', 'res', 'sch'].forEach(t => {
     const el = document.getElementById('db-' + t);
     if (el) el.style.display = t === tab ? 'block' : 'none';
   });
@@ -211,10 +246,63 @@ function showDbTab(tab, btn) {
 }
 
 /**
+ * Navigates to the Reports page and immediately opens the report
+ * preview for the given report type. Used by the report icon buttons
+ * on the Data Entry cards.
+ * @param {string} type - Report key
+ */
+function goToReport(type) {
+  showPage('reports');
+  generateReport(type);
+}
+
+/**
+ * Navigates to the Data Entry page and opens the form for the given panel.
+ * Used by the "Enter Data" buttons on the Reports cards and DB toolbar.
+ * @param {string} panel - Panel key matching DE_FORM_META
+ */
+function goToDataEntry(panel) {
+  showPage('data-entry');
+  openDataEntry(panel);
+}
+
+// Maps each active database tab key to its data entry panel and report type
+const DB_TAB_MAP = {
+  fac:   { entry: 'faculty',      report: 'faculty'      },
+  stu:   { entry: 'student',      report: 'student'      },
+  fload: { entry: 'faculty-load', report: 'faculty-load' },
+  sload: { entry: 'student-load', report: 'student-load' },
+  res:   { entry: 'research',     report: 'research'     },
+  sch:   { entry: 'scholarship',  report: 'scholarship'  },
+};
+
+// Tracks which database tab is currently active
+let currentDbTab = 'fac';
+
+/**
+ * Quick-access Enter Data from the Database toolbar.
+ * Opens the data entry form matching the currently active db tab.
+ */
+function dbQuickEnter() {
+  const map = DB_TAB_MAP[currentDbTab] || DB_TAB_MAP['fac'];
+  goToDataEntry(map.entry);
+}
+
+/**
+ * Quick-access Generate Report from the Database toolbar.
+ * Opens the report preview matching the currently active db tab.
+ */
+function dbQuickReport() {
+  const map = DB_TAB_MAP[currentDbTab] || DB_TAB_MAP['fac'];
+  goToReport(map.report);
+}
+
+
+/**
  * Navigates to the Data Entry page, opens the Database tab, and
  * jumps directly to the table matching the clicked card.
  * Used by the "View Records" icon buttons on the entry cards.
- * @param {string} tab - Table key: 'fac' | 'stu' | 'sch' | 'res'
+ * @param {string} tab - Table key: 'fac' | 'stu' | 'fload' | 'sload' | 'res' | 'sch'
  */
 function viewDbRecords(tab) {
   showPage('data-entry');
@@ -449,11 +537,13 @@ const reportLog = [];
 // Title and "no data" subtitle for each report type,
 // displayed in the preview panel header
 const RPT_META = {
-  faculty:     { title: 'Faculty Report',                            sub: 'No data available. Connect a data source to generate this report.' },
-  student:     { title: 'Student Report',                            sub: 'No data available. Connect a data source to generate this report.' },
-  scholarship: { title: 'Scholarships Report',                       sub: 'No data available. Connect a data source to generate this report.' },
-  research:    { title: 'Research &amp; Publication Report',         sub: 'No data available. Connect a data source to generate this report.' },
-  personnel:   { title: 'Research &amp; Extension Personnel Report', sub: 'No data available. Connect a data source to generate this report.' },
+  faculty:      { title: 'Faculty Report',                            sub: 'No data available. Connect a data source to generate this report.' },
+  student:      { title: 'Student Report',                            sub: 'No data available. Connect a data source to generate this report.' },
+  scholarship:  { title: 'Scholarships Report',                       sub: 'No data available. Connect a data source to generate this report.' },
+  research:     { title: 'Research &amp; Publication Report',         sub: 'No data available. Connect a data source to generate this report.' },
+  personnel:    { title: 'Research &amp; Extension Personnel Report', sub: 'No data available. Connect a data source to generate this report.' },
+  'faculty-load': { title: 'Faculty Academic Load Report',            sub: 'No data available. Connect a data source to generate this report.' },
+  'student-load': { title: 'Student Academic Load Report',            sub: 'No data available. Connect a data source to generate this report.' },
 };
 
 // HTML rendered inside the report document panel for each report type.
@@ -496,6 +586,21 @@ const RPT_DOC = {
     <div class="doc-row"><span class="doc-label">International Journals</span><span style="color:var(--muted)">—</span></div>
     <div class="doc-row"><span class="doc-label">National Journals</span><span style="color:var(--muted)">—</span></div>
     <div class="doc-row"><span class="doc-label">Conference Papers</span><span style="color:var(--muted)">—</span></div>`,
+  'faculty-load': `<h3>Faculty Academic Load Summary</h3>
+    <div class="doc-row"><span class="doc-label">Total Faculty with Load</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">1st Semester Average Units</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">2nd Semester Average Units</span><span style="color:var(--muted)">—</span></div>
+    <h3 style="margin-top:1rem;">Load Breakdown</h3>
+    <div class="doc-row"><span class="doc-label">Average Teaching Units</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Average Research Units</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Average Admin Units</span><span style="color:var(--muted)">—</span></div>`,
+  'student-load': `<h3>Student Academic Load Summary</h3>
+    <div class="doc-row"><span class="doc-label">Total Students with Load</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Regular Load</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Overload</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Underload</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Average GWA</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Average Units Enrolled</span><span style="color:var(--muted)">—</span></div>`,
   personnel: `<h3>R&amp;E Personnel Summary</h3>
     <div class="doc-row"><span class="doc-label">Active Researchers</span><span style="color:var(--muted)">—</span></div>
     <div class="doc-row"><span class="doc-label">Lead Researchers</span><span style="color:var(--muted)">—</span></div>
@@ -508,63 +613,125 @@ const RPT_DOC = {
 
 // Tracks which report type is currently open in the preview panel,
 // so exportReport() knows what to label the export action
-let currentRptType = null;
+let currentRptType    = null;
+let currentPreviewFmt = 'PDF';
 
 /**
- * Opens the report preview panel for the given report type.
- * Also adds an entry to the recent reports log.
- * @param {string} type - Report key (see RPT_META above)
+ * Opens the report preview with the chosen format tab pre-selected.
+ * Called when a format tag is clicked on a report card.
+ * Does NOT export — the user must click "Export as" in the preview.
  */
-function generateReport(type) {
-  currentRptType = type;
-  const meta = RPT_META[type] || {};
-
-  // Populate the preview panel header and document body
-  document.getElementById('previewTitle').innerHTML  = meta.title || '';
-  document.getElementById('previewSub').textContent  = meta.sub   || '';
-  document.getElementById('reportContent').innerHTML = RPT_DOC[type] || '';
-
-  // Swap hub view → preview panel
-  document.getElementById('rpt-hub').style.display     = 'none';
-  document.getElementById('rpt-preview').style.display = 'block';
-
-  // Record this generation in the report log
-  const now = new Date();
-  reportLog.unshift({
-    title:  (meta.title || 'Report').replace(/&amp;/g, '&'),
-    format: '—',  // updated when the user selects an export format
-    date:   now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }),
-    time:   now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    status: 'Generated',
-  });
-
-  updateRptBadge();
-
-  // Update the "Last Generated" metric card in the summary row
-  const lastEl = document.getElementById('rpt-last-gen');
-  if (lastEl) lastEl.textContent = 'Just now';
-
-  notify('Report generated!', 'create', 'Reports',
-    (meta.title || 'Report').replace(/&amp;/g, '&') + ' generated');
+function quickGenerateReport(type, fmt) {
+  generateReport(type);
+  switchPreviewFormat(fmt, document.getElementById('fmt-tab-' + fmt));
 }
 
 /**
- * Records the chosen export format on the most recent log entry
- * and shows a confirmation toast.
- * The actual file download would be implemented here once a
- * backend is connected.
- * @param {string} fmt - Export format: 'PDF' | 'Excel' | 'CSV'
+ * Opens the report preview panel. Defaults to PDF tab.
+ * Does NOT log — logging only happens on export.
+ */
+function generateReport(type) {
+  currentRptType    = type;
+  currentPreviewFmt = 'PDF';
+  const meta = RPT_META[type] || {};
+
+  document.getElementById('previewTitle').innerHTML = meta.title || '';
+  document.getElementById('previewSub').textContent = meta.sub   || '';
+
+  // Populate all three format previews
+  document.getElementById('reportContent-PDF').innerHTML   = RPT_DOC[type] || '';
+  document.getElementById('reportContent-Excel').innerHTML = buildExcelPreview(type);
+  document.getElementById('reportContent-CSV').textContent = buildCsvPreview(type);
+
+  // Reset to PDF tab
+  document.querySelectorAll('.rpt-fmt-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.rpt-fmt-preview').forEach(p => p.classList.remove('active'));
+  const pdfTab = document.getElementById('fmt-tab-PDF');
+  if (pdfTab) pdfTab.classList.add('active');
+  const pdfPanel = document.getElementById('rpt-fmt-PDF');
+  if (pdfPanel) pdfPanel.classList.add('active');
+  const hint = document.getElementById('rpt-fmt-hint');
+  if (hint) hint.textContent = 'Previewing as PDF';
+  updateExportBtn('PDF');
+
+  document.getElementById('rpt-hub').style.display     = 'none';
+  document.getElementById('rpt-preview').style.display = 'block';
+}
+
+/**
+ * Switches the visible preview panel and updates the export button label.
+ * @param {string} fmt - 'PDF' | 'Excel' | 'CSV'
+ * @param {HTMLElement} btn - The tab button that was clicked
+ */
+function switchPreviewFormat(fmt, btn) {
+  currentPreviewFmt = fmt;
+  document.querySelectorAll('.rpt-fmt-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.rpt-fmt-preview').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('rpt-fmt-' + fmt);
+  if (panel) panel.classList.add('active');
+  const hint = document.getElementById('rpt-fmt-hint');
+  if (hint) hint.textContent = 'Previewing as ' + fmt;
+  updateExportBtn(fmt);
+}
+
+/** Updates the Export button label to match the currently previewed format. */
+function updateExportBtn(fmt) {
+  const btn = document.getElementById('rpt-export-btn');
+  if (!btn) return;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg> Export as ' + fmt;
+}
+
+/** Called by the Export button — exports in the currently previewed format then returns to hub. */
+function exportCurrentFormat() {
+  exportReport(currentPreviewFmt);
+  closeReportPreview();
+}
+
+/** Builds the Excel-style row HTML for a given report type. */
+function buildExcelPreview(type) {
+  const rows = RPT_FIELDS[type] || [];
+  const ay   = document.getElementById('sidebar-ay') ? document.getElementById('sidebar-ay').textContent : 'AY ——';
+  return rows.map(function(r) {
+    return '<div class="rpt-excel-row">'
+      + '<span class="rpt-excel-data" style="width:200px;">' + r + '</span>'
+      + '<span class="rpt-excel-data muted" style="flex:1;">—</span>'
+      + '<span class="rpt-excel-data muted" style="width:120px;">' + ay + '</span>'
+      + '</div>';
+  }).join('');
+}
+
+/** Builds the CSV text preview for a given report type. */
+function buildCsvPreview(type) {
+  const rows = RPT_FIELDS[type] || [];
+  const ay   = document.getElementById('sidebar-ay') ? document.getElementById('sidebar-ay').textContent : 'AY ——';
+  var lines  = rows.map(function(r) { return r + ',—,' + ay; });
+  return ['Field,Value,Academic Year'].concat(lines).join('\n');
+}
+
+/**
+ * Records the export in the recent reports log and shows a toast.
+ * Logs only to reportLog — NOT to the activity log, since report
+ * exports are tracked separately in the Recent Reports tab.
  */
 function exportReport(fmt) {
   if (!currentRptType) return;
   const meta  = RPT_META[currentRptType] || {};
   const title = (meta.title || 'Report').replace(/&amp;/g, '&');
-
-  // Update the format field on the most recent log entry
-  if (reportLog.length > 0) reportLog[0].format = fmt;
-
+  const now   = new Date();
+  reportLog.unshift({
+    title,
+    format: fmt,
+    date:   now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }),
+    time:   now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    status: 'Exported',
+  });
   updateRptBadge();
-  notify('Exported as ' + fmt + '!', 'export', 'Reports', title + ' exported as ' + fmt);
+  const lastEl = document.getElementById('rpt-last-gen');
+  if (lastEl) lastEl.textContent = 'Just now';
+  // Call notify without logType/logCat/logDetail so it only shows the
+  // toast without adding an entry to the Data Entry activity log
+  notify('Exported as ' + fmt + '!');
 }
 
 /** Closes the report preview and returns to the reports hub. */
@@ -572,6 +739,18 @@ function closeReportPreview() {
   document.getElementById('rpt-preview').style.display = 'none';
   document.getElementById('rpt-hub').style.display     = 'block';
 }
+
+// Flat field list per report type — used to build Excel and CSV previews
+const RPT_FIELDS = {
+  faculty:     ['Total Faculty','Regular / Permanent','Contractual / Part-time','With Doctoral Degree','With Master\'s Degree','Professor I\u2013VI','Associate Professor I\u2013V','Assistant Professor I\u2013IV','Instructor I\u2013III'],
+  student:     ['Total Students','Regular Students','Irregular Students','1st Year','2nd Year','3rd Year','4th Year & above'],
+  scholarship: ['Total Active Grantees','Full Grants','Partial Grants','CHED','DOST-SEI','LGU / Local Government'],
+  research:    ['Ongoing Projects','Completed Projects','Total Research Budget','International Journals','National Journals','Conference Papers'],
+  personnel:   ['Active Researchers','Lead Researchers','Co-Researchers','Extension Coordinators','Community Programs','Partner Communities'],
+  'faculty-load': ['Total Faculty with Load','1st Semester Average Units','2nd Semester Average Units','Average Teaching Units','Average Research Units','Average Extension Units','Average Admin Units'],
+  'student-load': ['Total Students with Load','Regular Load','Overload','Underload','Average GWA','Average Units Enrolled'],
+};
+
 
 /**
  * Switches between the two tabs on the Reports page:

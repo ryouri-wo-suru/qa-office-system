@@ -109,20 +109,15 @@ const SIDEBAR_HTML = /* html */`
       <div class="sidebar-label">Data Sources</div>
     </div>
     <div class="sidebar-sources">
-      <div class="source-item"><div class="source-dot" id="dot-our"></div> OUR <span class="source-status" id="status-our">Not connected</span></div>
-      <div class="source-item"><div class="source-dot" id="dot-fos"></div> FoS <span class="source-status" id="status-fos">Not connected</span></div>
-      <div class="source-item"><div class="source-dot" id="dot-osa"></div> OSA <span class="source-status" id="status-osa">Not connected</span></div>
-      <div class="source-item"><div class="source-dot" id="dot-pivot"></div> PIVOT / HR <span class="source-status" id="status-pivot">Not connected</span></div>
-      <div class="source-item"><div class="source-dot" id="dot-rne"></div> R&amp;E Personnel <span class="source-status" id="status-rne">Not connected</span></div>
+      <div class="source-item">OUR</div>
+      <div class="source-item">FoS</div>
+      <div class="source-item">OSA</div>
+      <div class="source-item">PIVOT / HR</div>
+      <div class="source-item">R&amp;E Personnel</div>
     </div>
 
     <div class="sidebar-divider"></div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-label" id="sidebar-ay">AY ——</div>
-      <div style="font-size:12px;color:var(--muted);padding:0 8px;" id="sidebar-sem">—</div>
-      <div style="font-size:11px;color:var(--muted);padding:4px 8px;">No sync scheduled</div>
-    </div>
 `;
 
 /* Notification toast ────────────────────────────────────────────

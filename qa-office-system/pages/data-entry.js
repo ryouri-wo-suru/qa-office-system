@@ -119,6 +119,9 @@ const DATA_ENTRY_HTML = /* html */`
                 <button class="de-btn-icon" title="View Records" onclick="viewDbRecords('fac')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 </button>
+                <button class="de-btn-icon" title="Generate Report" onclick="goToReport('faculty')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </button>
               </div>
             </div>
           </div>
@@ -150,6 +153,9 @@ const DATA_ENTRY_HTML = /* html */`
                 <button class="de-btn-icon" title="View Records" onclick="viewDbRecords('stu')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 </button>
+                <button class="de-btn-icon" title="Generate Report" onclick="goToReport('student')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </button>
               </div>
             </div>
           </div>
@@ -178,8 +184,11 @@ const DATA_ENTRY_HTML = /* html */`
               </div>
               <div class="de-card-actions">
                 <button class="de-btn-enter" onclick="openDataEntry('faculty-load')">Enter Data →</button>
-                <button class="de-btn-icon" title="View Records" onclick="viewDbRecords('fac')">
+                <button class="de-btn-icon" title="View Records" onclick="viewDbRecords('fload')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </button>
+                <button class="de-btn-icon" title="Generate Report" onclick="goToReport('faculty')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 </button>
               </div>
             </div>
@@ -209,8 +218,11 @@ const DATA_ENTRY_HTML = /* html */`
               </div>
               <div class="de-card-actions">
                 <button class="de-btn-enter" onclick="openDataEntry('student-load')">Enter Data →</button>
-                <button class="de-btn-icon" title="View Records" onclick="viewDbRecords('stu')">
+                <button class="de-btn-icon" title="View Records" onclick="viewDbRecords('sload')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </button>
+                <button class="de-btn-icon" title="Generate Report" onclick="goToReport('student')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 </button>
               </div>
             </div>
@@ -243,6 +255,9 @@ const DATA_ENTRY_HTML = /* html */`
                 <button class="de-btn-icon" title="View Records" onclick="viewDbRecords('res')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 </button>
+                <button class="de-btn-icon" title="Generate Report" onclick="goToReport('research')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </button>
               </div>
             </div>
           </div>
@@ -274,6 +289,9 @@ const DATA_ENTRY_HTML = /* html */`
                 <button class="de-btn-icon" title="View Records" onclick="viewDbRecords('sch')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 </button>
+                <button class="de-btn-icon" title="Generate Report" onclick="goToReport('scholarship')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </button>
               </div>
             </div>
           </div>
@@ -303,7 +321,7 @@ const DATA_ENTRY_HTML = /* html */`
                 <option value="Scholarships">Scholarships</option>
               </select>
             </div>
-            <button class="btn btn-ghost" style="font-size:12px;" onclick="clearActivityLog()">Clear Log</button>
+            <button class="btn btn-gold" style="font-size:12px;" onclick="clearActivityLog()">Clear Log</button>
           </div>
 
           <div class="act-empty" id="act-empty">
@@ -322,55 +340,85 @@ const DATA_ENTRY_HTML = /* html */`
             <div class="page-hero-sub">Searchable and filterable database of all collected records</div>
           </div>
           <div class="deco-bar"></div>
+
+          <!-- 6 tabs matching the Data Entry cards -->
           <div class="tabs-local">
-            <button class="tab-btn active" onclick="showDbTab('fac',this)">Faculty</button>
-            <button class="tab-btn" onclick="showDbTab('stu',this)">Students</button>
-            <button class="tab-btn" onclick="showDbTab('sch',this)">Scholarships</button>
+            <button class="tab-btn active" onclick="showDbTab('fac',this)">Faculty Info</button>
+            <button class="tab-btn" onclick="showDbTab('stu',this)">Student Info</button>
+            <button class="tab-btn" onclick="showDbTab('fload',this)">Faculty Load</button>
+            <button class="tab-btn" onclick="showDbTab('sload',this)">Student Load</button>
             <button class="tab-btn" onclick="showDbTab('res',this)">Research</button>
+            <button class="tab-btn" onclick="showDbTab('sch',this)">Scholarships</button>
           </div>
+
+          <!-- Search + Status filter + Quick actions -->
           <div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;align-items:center;">
             <input type="text" placeholder="🔍 Search records..." style="flex:1;min-width:200px;"/>
-            <select id="db-status-filter" style="width:160px;">
+            <select id="db-status-filter" style="width:180px;">
               <option value="">All Status</option>
-              <option>Active</option>
-              <option>On Leave</option>
-              <option>Retired</option>
+              <option>Regular</option>
+              <option>Contractual</option>
+              <option>Part-time</option>
+              <option>Visiting</option>
             </select>
-            <button class="btn btn-gold" onclick="notify('Exported as CSV!', 'export', 'Database', 'Records exported as CSV')">↓ Export CSV</button>
-            <button class="btn btn-green" onclick="notify('Exported as XLSX!', 'export', 'Database', 'Records exported as XLSX')">↓ Export XLSX</button>
+            <button class="btn btn-primary" id="db-enter-btn" onclick="dbQuickEnter()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>
+              Enter Data
+            </button>
+            <button class="btn btn-primary" id="db-report-btn" onclick="dbQuickReport()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Generate Report
+            </button>
           </div>
+
+          <!-- Faculty Information -->
           <div class="table-wrap" id="db-fac">
             <table>
-              <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Rank</th><th>Attainment</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td colspan="6" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr>
-              </tbody>
+              <thead><tr><th>Faculty ID</th><th>Full Name</th><th>Department / College</th><th>Rank / Designation</th><th>Employment Status</th><th>Highest Attainment</th><th>Years in Service</th><th>Specialization</th></tr></thead>
+              <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
+
+          <!-- Student Information -->
           <div class="table-wrap" id="db-stu" style="display:none;">
             <table>
-              <thead><tr><th>Student ID</th><th>Name</th><th>Program</th><th>Year Level</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td colspan="5" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr>
-              </tbody>
+              <thead><tr><th>Student ID</th><th>Full Name</th><th>Program / Course</th><th>Year Level</th><th>Enrollment Status</th><th>Sex</th><th>Date of Birth</th><th>Contact Number</th></tr></thead>
+              <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
-          <div class="table-wrap" id="db-sch" style="display:none;">
+
+          <!-- Faculty Academic Load -->
+          <div class="table-wrap" id="db-fload" style="display:none;">
             <table>
-              <thead><tr><th>Scholarship ID</th><th>Student</th><th>Program</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td colspan="6" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr>
-              </tbody>
+              <thead><tr><th>Faculty ID</th><th>Faculty Name</th><th>Academic Year</th><th>Semester</th><th>Teaching Units</th><th>Research Units</th><th>Extension Units</th><th>Admin Units</th><th>Classes Handled</th><th>Total Workload</th></tr></thead>
+              <tbody><tr><td colspan="10" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
+
+          <!-- Student Academic Load -->
+          <div class="table-wrap" id="db-sload" style="display:none;">
+            <table>
+              <thead><tr><th>Student ID</th><th>Student Name</th><th>Academic Year</th><th>Semester</th><th>Total Units</th><th>No. of Subjects</th><th>GWA</th><th>Load Status</th></tr></thead>
+              <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
+            </table>
+          </div>
+
+          <!-- Research & Extension -->
           <div class="table-wrap" id="db-res" style="display:none;">
             <table>
-              <thead><tr><th>Personnel ID</th><th>Name</th><th>Role</th><th>Project</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td colspan="5" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr>
-              </tbody>
+              <thead><tr><th>Personnel ID</th><th>Full Name</th><th>Role</th><th>Project Title</th><th>Funding Agency</th><th>Duration</th><th>Status</th><th>Budget (PHP)</th></tr></thead>
+              <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
+
+          <!-- Scholarships -->
+          <div class="table-wrap" id="db-sch" style="display:none;">
+            <table>
+              <thead><tr><th>Scholarship ID</th><th>Student Name</th><th>Student ID</th><th>Scholarship Program</th><th>Type</th><th>Grant Amount (PHP)</th><th>Academic Year</th><th>Status</th></tr></thead>
+              <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
+            </table>
+          </div>
+
           <div style="margin-top:0.8rem;font-size:12px;color:var(--muted);">No records found · Add data through the Data Entry tab</div>
         </div><!-- /de-database-panel -->
 
@@ -400,9 +448,9 @@ const DATA_ENTRY_HTML = /* html */`
             <div class="form-group full"><label>Remarks</label><textarea placeholder=""></textarea></div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Faculty Information', 'New Faculty Information record saved')">+ Save Record</button>
-            <button class="btn btn-ghost">Clear Form</button>
-            <button class="btn btn-green" onclick="notify('Imported from PIVOT/HR!', 'import', 'Faculty Information', 'Batch import from PIVOT/HR System')">↓ Import from PIVOT/HR</button>
+            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Faculty Information', 'New Faculty Information record saved');closeDataEntry()">+ Save Record</button>
+            <button class="btn btn-gold">Clear Form</button>
+            <button class="btn btn-green" onclick="notify('Imported from PIVOT/HR!', 'import', 'Faculty Information', 'Batch import from PIVOT/HR System');closeDataEntry()">↓ Import from PIVOT/HR</button>
           </div>
         </div>
 
@@ -419,9 +467,9 @@ const DATA_ENTRY_HTML = /* html */`
             <div class="form-group full"><label>Address</label><textarea placeholder="" style="min-height:56px;"></textarea></div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Student Information', 'New Student Information record saved')">+ Save Record</button>
-            <button class="btn btn-ghost">Clear Form</button>
-            <button class="btn btn-green" onclick="notify('Imported from AIMS!', 'import', 'Student Information', 'Batch import from AIMS System')">↓ Import from AIMS</button>
+            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Student Information', 'New Student Information record saved');closeDataEntry()">+ Save Record</button>
+            <button class="btn btn-gold">Clear Form</button>
+            <button class="btn btn-green" onclick="notify('Imported from AIMS!', 'import', 'Student Information', 'Batch import from AIMS System');closeDataEntry()">↓ Import from AIMS</button>
           </div>
         </div>
 
@@ -437,8 +485,8 @@ const DATA_ENTRY_HTML = /* html */`
             <div class="form-group"><label>Budget (PHP)</label><input type="number" placeholder=""/></div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Research & Extension', 'New Research & Extension record saved')">+ Save Record</button>
-            <button class="btn btn-ghost">Clear Form</button>
+            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Research & Extension', 'New Research & Extension record saved');closeDataEntry()">+ Save Record</button>
+            <button class="btn btn-gold">Clear Form</button>
           </div>
         </div>
 
@@ -454,8 +502,8 @@ const DATA_ENTRY_HTML = /* html */`
             <div class="form-group"><label>Status</label><select><option>Active</option><option>Terminated</option><option>On Probation</option><option>Completed</option></select></div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Scholarships', 'New Scholarships record saved')">+ Save Record</button>
-            <button class="btn btn-ghost">Clear Form</button>
+            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Scholarships', 'New Scholarships record saved');closeDataEntry()">+ Save Record</button>
+            <button class="btn btn-gold">Clear Form</button>
           </div>
         </div>
 
@@ -471,8 +519,8 @@ const DATA_ENTRY_HTML = /* html */`
             <div class="form-group"><label>Load Status</label><select><option>Regular Load</option><option>Overload</option><option>Underload</option></select></div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Student Academic Load', 'New Student Academic Load record saved')">+ Save Record</button>
-            <button class="btn btn-ghost">Clear Form</button>
+            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Student Academic Load', 'New Student Academic Load record saved');closeDataEntry()">+ Save Record</button>
+            <button class="btn btn-gold">Clear Form</button>
           </div>
         </div>
 
@@ -490,8 +538,8 @@ const DATA_ENTRY_HTML = /* html */`
             <div class="form-group"><label>Total Workload Units</label><input type="number" placeholder="" min="0"/></div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Faculty Academic Load', 'New Faculty Academic Load record saved')">+ Save Record</button>
-            <button class="btn btn-ghost">Clear Form</button>
+            <button class="btn btn-primary" onclick="notify('Record saved!', 'create', 'Faculty Academic Load', 'New Faculty Academic Load record saved');closeDataEntry()">+ Save Record</button>
+            <button class="btn btn-gold">Clear Form</button>
           </div>
         </div>
 

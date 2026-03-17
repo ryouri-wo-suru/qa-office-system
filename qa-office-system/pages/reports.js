@@ -101,19 +101,23 @@ const REPORTS_HTML = /* html */`
                 </div>
               </div>
               <div class="rpt-formats">
-                <div class="rpt-section-label">Export Formats:</div>
+                <div class="rpt-section-label">Export Formats: <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">— click to generate directly</span></div>
                 <div class="rpt-format-tags">
-                  <span class="rpt-format">PDF</span>
-                  <span class="rpt-format">Excel</span>
-                  <span class="rpt-format">CSV</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('faculty','PDF')" title="Generate & export as PDF">PDF</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('faculty','Excel')" title="Generate & export as Excel">Excel</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('faculty','CSV')" title="Generate & export as CSV">CSV</span>
                 </div>
               </div>
+              <div class="rpt-card-actions">
               <button class="rpt-btn-generate" onclick="generateReport('faculty')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Generate Report
               </button>
+              <button class="de-btn-icon" title="Enter Data" onclick="goToDataEntry('faculty')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              </div>
             </div>
-
             <div class="rpt-card">
               <div class="rpt-card-header">
                 <div class="rpt-card-icon" style="background:rgba(14,96,33,0.2);">
@@ -136,53 +140,100 @@ const REPORTS_HTML = /* html */`
                 </div>
               </div>
               <div class="rpt-formats">
-                <div class="rpt-section-label">Export Formats:</div>
+                <div class="rpt-section-label">Export Formats: <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">— click to generate directly</span></div>
                 <div class="rpt-format-tags">
-                  <span class="rpt-format">PDF</span>
-                  <span class="rpt-format">Excel</span>
-                  <span class="rpt-format">CSV</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('student','PDF')" title="Generate & export as PDF">PDF</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('student','Excel')" title="Generate & export as Excel">Excel</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('student','CSV')" title="Generate & export as CSV">CSV</span>
                 </div>
               </div>
+              <div class="rpt-card-actions">
               <button class="rpt-btn-generate" onclick="generateReport('student')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Generate Report
               </button>
+              <button class="de-btn-icon" title="Enter Data" onclick="goToDataEntry('student')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              </div>
             </div>
-
             <div class="rpt-card">
               <div class="rpt-card-header">
                 <div class="rpt-card-icon" style="background:rgba(246,172,29,0.15);">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><circle cx="12" cy="10" r="2"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
                 </div>
                 <div>
-                  <div class="rpt-card-title">Scholarships Report</div>
-                  <div class="rpt-card-desc">Active grantees, funding agency breakdown, scholarship types, grant amounts, and award status</div>
+                  <div class="rpt-card-title">Faculty Academic Load Report</div>
+                  <div class="rpt-card-desc">Faculty teaching loads, credit units, research and administrative load per semester and academic year</div>
                 </div>
               </div>
               <div class="rpt-sections">
                 <div class="rpt-section-label">Report Sections:</div>
                 <div class="rpt-tags">
-                  <span class="rpt-tag">Grantee Information</span>
-                  <span class="rpt-tag">Scholarship Program</span>
-                  <span class="rpt-tag">Grant Type &amp; Amount</span>
-                  <span class="rpt-tag">Funding Agency</span>
-                  <span class="rpt-tag">Award Status</span>
+                  <span class="rpt-tag">Semester / Trimester Period</span>
+                  <span class="rpt-tag">Teaching Units</span>
+                  <span class="rpt-tag">Research Units</span>
+                  <span class="rpt-tag">Extension Units</span>
+                  <span class="rpt-tag">Admin Units</span>
+                  <span class="rpt-tag">Total Workload</span>
                 </div>
               </div>
               <div class="rpt-formats">
-                <div class="rpt-section-label">Export Formats:</div>
+                <div class="rpt-section-label">Export Formats: <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">— click to generate directly</span></div>
                 <div class="rpt-format-tags">
-                  <span class="rpt-format">PDF</span>
-                  <span class="rpt-format">Excel</span>
-                  <span class="rpt-format">CSV</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('faculty-load','PDF')">PDF</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('faculty-load','Excel')">Excel</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('faculty-load','CSV')">CSV</span>
                 </div>
               </div>
-              <button class="rpt-btn-generate" onclick="generateReport('scholarship')">
+              <div class="rpt-card-actions">
+              <button class="rpt-btn-generate" onclick="generateReport('faculty-load')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Generate Report
               </button>
+              <button class="de-btn-icon" title="Enter Data" onclick="goToDataEntry('faculty-load')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              </div>
             </div>
-
+            <div class="rpt-card">
+              <div class="rpt-card-header">
+                <div class="rpt-card-icon" style="background:rgba(58,123,213,0.15);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#3a7bd5" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </div>
+                <div>
+                  <div class="rpt-card-title">Student Academic Load Report</div>
+                  <div class="rpt-card-desc">Student enrollment loads, credit units per semester, GWA, and academic performance data</div>
+                </div>
+              </div>
+              <div class="rpt-sections">
+                <div class="rpt-section-label">Report Sections:</div>
+                <div class="rpt-tags">
+                  <span class="rpt-tag">Semester / Academic Year</span>
+                  <span class="rpt-tag">Total Units Enrolled</span>
+                  <span class="rpt-tag">Number of Subjects</span>
+                  <span class="rpt-tag">GWA &amp; Performance</span>
+                  <span class="rpt-tag">Load Status</span>
+                </div>
+              </div>
+              <div class="rpt-formats">
+                <div class="rpt-section-label">Export Formats: <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">— click to generate directly</span></div>
+                <div class="rpt-format-tags">
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('student-load','PDF')">PDF</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('student-load','Excel')">Excel</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('student-load','CSV')">CSV</span>
+                </div>
+              </div>
+              <div class="rpt-card-actions">
+              <button class="rpt-btn-generate" onclick="generateReport('student-load')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Generate Report
+              </button>
+              <button class="de-btn-icon" title="Enter Data" onclick="goToDataEntry('student-load')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              </div>
+            </div>
             <div class="rpt-card">
               <div class="rpt-card-header">
                 <div class="rpt-card-icon" style="background:rgba(58,123,213,0.15);">
@@ -204,19 +255,23 @@ const REPORTS_HTML = /* html */`
                 </div>
               </div>
               <div class="rpt-formats">
-                <div class="rpt-section-label">Export Formats:</div>
+                <div class="rpt-section-label">Export Formats: <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">— click to generate directly</span></div>
                 <div class="rpt-format-tags">
-                  <span class="rpt-format">PDF</span>
-                  <span class="rpt-format">Excel</span>
-                  <span class="rpt-format">CSV</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('research','PDF')" title="Generate & export as PDF">PDF</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('research','Excel')" title="Generate & export as Excel">Excel</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('research','CSV')" title="Generate & export as CSV">CSV</span>
                 </div>
               </div>
+              <div class="rpt-card-actions">
               <button class="rpt-btn-generate" onclick="generateReport('research')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Generate Report
               </button>
+              <button class="de-btn-icon" title="Enter Data" onclick="goToDataEntry('research')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              </div>
             </div>
-
             <div class="rpt-card">
               <div class="rpt-card-header">
                 <div class="rpt-card-icon" style="background:rgba(138,21,56,0.18);">
@@ -238,19 +293,61 @@ const REPORTS_HTML = /* html */`
                 </div>
               </div>
               <div class="rpt-formats">
-                <div class="rpt-section-label">Export Formats:</div>
+                <div class="rpt-section-label">Export Formats: <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">— click to generate directly</span></div>
                 <div class="rpt-format-tags">
-                  <span class="rpt-format">PDF</span>
-                  <span class="rpt-format">Excel</span>
-                  <span class="rpt-format">CSV</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('personnel','PDF')" title="Generate & export as PDF">PDF</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('personnel','Excel')" title="Generate & export as Excel">Excel</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('personnel','CSV')" title="Generate & export as CSV">CSV</span>
                 </div>
               </div>
+              <div class="rpt-card-actions">
               <button class="rpt-btn-generate" onclick="generateReport('personnel')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 Generate Report
               </button>
+              <button class="de-btn-icon" title="Enter Data" onclick="goToDataEntry('research')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              </div>
             </div>
-
+            <div class="rpt-card">
+              <div class="rpt-card-header">
+                <div class="rpt-card-icon" style="background:rgba(246,172,29,0.15);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><circle cx="12" cy="10" r="2"/></svg>
+                </div>
+                <div>
+                  <div class="rpt-card-title">Scholarships Report</div>
+                  <div class="rpt-card-desc">Active grantees, funding agency breakdown, scholarship types, grant amounts, and award status</div>
+                </div>
+              </div>
+              <div class="rpt-sections">
+                <div class="rpt-section-label">Report Sections:</div>
+                <div class="rpt-tags">
+                  <span class="rpt-tag">Grantee Information</span>
+                  <span class="rpt-tag">Scholarship Program</span>
+                  <span class="rpt-tag">Grant Type &amp; Amount</span>
+                  <span class="rpt-tag">Funding Agency</span>
+                  <span class="rpt-tag">Award Status</span>
+                </div>
+              </div>
+              <div class="rpt-formats">
+                <div class="rpt-section-label">Export Formats: <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">— click to generate directly</span></div>
+                <div class="rpt-format-tags">
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('scholarship','PDF')" title="Generate & export as PDF">PDF</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('scholarship','Excel')" title="Generate & export as Excel">Excel</span>
+                  <span class="rpt-format rpt-format-btn" onclick="quickGenerateReport('scholarship','CSV')" title="Generate & export as CSV">CSV</span>
+                </div>
+              </div>
+              <div class="rpt-card-actions">
+              <button class="rpt-btn-generate" onclick="generateReport('scholarship')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Generate Report
+              </button>
+              <button class="de-btn-icon" title="Enter Data" onclick="goToDataEntry('scholarship')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              </div>
+            </div>
           </div><!-- /rpt-cards -->
         </div><!-- /rpt-types-panel -->
 
@@ -273,7 +370,7 @@ const REPORTS_HTML = /* html */`
                 <option>CSV</option>
               </select>
             </div>
-            <button class="btn btn-ghost" style="font-size:12px;" onclick="clearReportLog()">Clear Log</button>
+            <button class="btn btn-gold" style="font-size:12px;" onclick="clearReportLog()">Clear Log</button>
           </div>
 
           <div class="act-empty" id="rpt-log-empty">
@@ -289,6 +386,8 @@ const REPORTS_HTML = /* html */`
 
       <!-- REPORT PREVIEW -->
       <div id="rpt-preview" style="display:none;">
+
+        <!-- Header: back button + report title -->
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.4rem;">
           <button class="btn btn-ghost" style="padding:6px 14px;" onclick="closeReportPreview()">← Back</button>
           <div>
@@ -297,17 +396,72 @@ const REPORTS_HTML = /* html */`
           </div>
         </div>
         <div class="deco-bar"></div>
+
+        <!-- Format switcher tabs -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;gap:4px;">
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;font-weight:600;align-self:center;margin-right:8px;">Preview as:</div>
+            <button class="rpt-fmt-tab active" id="fmt-tab-PDF"   onclick="switchPreviewFormat('PDF',   this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              PDF
+            </button>
+            <button class="rpt-fmt-tab" id="fmt-tab-Excel" onclick="switchPreviewFormat('Excel', this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18"/></svg>
+              Excel
+            </button>
+            <button class="rpt-fmt-tab" id="fmt-tab-CSV"   onclick="switchPreviewFormat('CSV',   this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              CSV
+            </button>
+          </div>
+          <div style="font-size:11px;color:var(--muted);" id="rpt-fmt-hint">Previewing as PDF</div>
+        </div>
+
+        <!-- Preview panels — one per format -->
         <div class="report-preview">
-          <div class="preview-top">
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="btn btn-primary" onclick="exportReport('PDF')">↓ Export PDF</button>
-              <button class="btn btn-gold" onclick="exportReport('Excel')">↓ Export Excel</button>
-              <button class="btn btn-green" onclick="exportReport('CSV')">↓ Export CSV</button>
+
+          <!-- PDF preview -->
+          <div class="rpt-fmt-preview active" id="rpt-fmt-PDF">
+            <div class="report-doc" id="reportContent-PDF">
+              <div style="text-align:center;padding:3rem;color:var(--muted);font-size:13px;">Loading preview…</div>
             </div>
           </div>
-          <div class="report-doc" id="reportContent"></div>
+
+          <!-- Excel preview -->
+          <div class="rpt-fmt-preview" id="rpt-fmt-Excel">
+            <div class="rpt-excel-preview">
+              <div class="rpt-excel-toolbar">
+                <span class="rpt-excel-cell rpt-excel-header" style="width:200px;">Field</span>
+                <span class="rpt-excel-cell rpt-excel-header" style="flex:1;">Value</span>
+                <span class="rpt-excel-cell rpt-excel-header" style="width:120px;">Academic Year</span>
+              </div>
+              <div id="reportContent-Excel"></div>
+            </div>
+          </div>
+
+          <!-- CSV preview -->
+          <div class="rpt-fmt-preview" id="rpt-fmt-CSV">
+            <div class="rpt-csv-preview">
+              <div class="rpt-csv-label">Raw CSV Output</div>
+              <pre id="reportContent-CSV" class="rpt-csv-code"></pre>
+            </div>
+          </div>
+
+        </div><!-- /report-preview -->
+
+        <!-- Export button at the bottom -->
+        <div class="rpt-export-footer">
+          <div style="font-size:12px;color:var(--muted);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            All fields show — until a data source is connected
+          </div>
+          <button class="btn btn-primary rpt-export-btn" id="rpt-export-btn" onclick="exportCurrentFormat();closeReportPreview()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+            Export as PDF
+          </button>
         </div>
-      </div>
+
+      </div><!-- /rpt-preview -->
 
     </div>
 `;

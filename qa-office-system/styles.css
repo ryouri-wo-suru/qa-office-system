@@ -115,15 +115,6 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .sidebar-divider { height: 1px; background: var(--border2); margin: 8px 1rem; }
 .sidebar-sources { padding: 0 1rem 1rem; }
 .source-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 12px; color: var(--muted); }
-.source-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: rgba(255,255,255,0.35); transition: background 0.4s; }
-.source-dot.disconnected { background: rgba(255,255,255,0.35); }
-.source-dot.connected    { background: var(--green2); }
-.source-dot.syncing      { background: var(--gold); }
-.source-dot.error        { background: var(--header); }
-.source-status { margin-left: auto; font-size: 10px; color: var(--muted); transition: color 0.4s; }
-.source-status.connected { color: var(--green2); }
-.source-status.syncing   { color: var(--gold); }
-.source-status.error     { color: #e87093; }
 
 
 /* ----------------------------------------------------------------
@@ -439,9 +430,41 @@ tbody tr:hover td { background: rgba(246,172,29,0.03); }
 .rpt-formats { padding-top:0.8rem; }
 .rpt-format-tags { display:flex; gap:6px; margin-top:6px; }
 .rpt-format { background:rgba(246,172,29,0.1); border:1px solid rgba(246,172,29,0.2); border-radius:6px; padding:3px 12px; font-size:11px; font-weight:600; color:var(--gold); }
-.rpt-btn-generate { width:100%; background:var(--bg3); color:var(--text); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:12px 16px; font-size:13px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:auto; }
-.rpt-btn-generate:hover { background:var(--header); border-color:var(--header); color:#fff; }
+.rpt-format-btn { cursor:pointer; transition:background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s; }
+.rpt-format-btn:hover { background:var(--gold); color:var(--bg3); border-color:var(--gold); transform:translateY(-2px); box-shadow:0 4px 12px rgba(246,172,29,0.35); }
+.rpt-format-btn:active { transform:translateY(0); box-shadow:none; }
+/* Format preview tabs */
+.rpt-fmt-tab { display:inline-flex; align-items:center; gap:5px; padding:6px 14px; border-radius:7px; border:1px solid rgba(255,255,255,0.1); background:transparent; color:var(--muted); font-size:12px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.18s; }
+.rpt-fmt-tab:hover:not(.active) { border-color:var(--gold); color:var(--gold); }
+.rpt-fmt-tab.active { background:var(--header); border-color:var(--header); color:#fff; }
+/* Format preview panels */
+.rpt-fmt-preview { display:none; }
+.rpt-fmt-preview.active { display:block; }
+/* Excel preview */
+.rpt-excel-preview { border:1px solid rgba(255,255,255,0.07); border-radius:8px; overflow:hidden; }
+.rpt-excel-toolbar { display:flex; background:rgba(14,96,33,0.2); border-bottom:1px solid rgba(14,96,33,0.3); }
+.rpt-excel-cell { padding:7px 12px; font-size:12px; border-right:1px solid rgba(255,255,255,0.06); }
+.rpt-excel-cell:last-child { border-right:none; }
+.rpt-excel-header { font-size:10px; font-weight:600; color:#4caf71; text-transform:uppercase; letter-spacing:0.5px; }
+.rpt-excel-row { display:flex; border-bottom:1px solid rgba(255,255,255,0.03); }
+.rpt-excel-row:last-child { border-bottom:none; }
+.rpt-excel-row:hover { background:rgba(14,96,33,0.06); }
+.rpt-excel-data { padding:7px 12px; font-size:12px; color:var(--text); border-right:1px solid rgba(255,255,255,0.04); }
+.rpt-excel-data:last-child { border-right:none; }
+.rpt-excel-data.muted { color:var(--muted); }
+/* CSV preview */
+.rpt-csv-preview { background:var(--bg3); border:1px solid rgba(255,255,255,0.07); border-radius:8px; overflow:hidden; }
+.rpt-csv-label { font-size:10px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.7px; padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.03); }
+.rpt-csv-code { padding:1rem 1.2rem; font-family:'Courier New',monospace; font-size:12px; color:#4caf71; line-height:1.8; white-space:pre; overflow-x:auto; margin:0; }
+/* Export footer */
+.rpt-export-footer { display:flex; align-items:center; justify-content:space-between; margin-top:1.4rem; padding-top:1.2rem; border-top:1px solid var(--border2); flex-wrap:wrap; gap:10px; }
+.rpt-export-btn { gap:8px; padding:10px 24px; font-size:13px; }
+.rpt-btn-generate { width:100%; background:var(--header); color:#fff; border:none; border-radius:8px; padding:12px 16px; font-size:13px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:auto; }
+.rpt-btn-generate:hover { background:var(--header2); }
 .rpt-btn-generate svg { width:16px; height:16px; }
+/* Row wrapper for report card bottom buttons — Generate Report fills space, Enter Data is icon */
+.rpt-card-actions { display:flex; align-items:center; gap:8px; margin-top:auto; }
+.rpt-card-actions .rpt-btn-generate { flex:1; width:auto; margin-top:0; }
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg3); }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
@@ -459,3 +482,165 @@ tbody tr:hover td { background: rgba(246,172,29,0.03); }
 ::-webkit-scrollbar-track { background: var(--bg3); }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(246,172,29,0.4); }
+
+/* ----------------------------------------------------------------
+   [7] RESPONSIVE  —  fluid layout at all window sizes
+   ----------------------------------------------------------------
+   Breakpoints:
+     1200px  — wide desktop (default styles above apply)
+      960px  — medium desktop / small laptop
+      768px  — tablet / narrow laptop
+      560px  — large phone / very small window
+   ---------------------------------------------------------------- */
+
+/* ── 960px: compress sidebar, tighten grids ─────────────────── */
+@media (max-width: 960px) {
+  :root { --sidebar-w: 200px; }
+
+  .main { padding: 1.4rem; }
+
+  /* Metric rows → 2 columns */
+  .metrics-row { grid-template-columns: repeat(2, 1fr); }
+  #page-historical .metrics-row { grid-template-columns: repeat(2, 1fr); }
+
+  /* Historical summary → 2 columns */
+  .hist-summary-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Entry cards → 2 columns */
+  .de-cards { grid-template-columns: repeat(2, 1fr); }
+
+  /* Report cards → 1 column */
+  .rpt-cards { grid-template-columns: 1fr; }
+
+  /* Content grid → stacked */
+  .content-grid { grid-template-columns: 1fr; }
+  .content-grid.wide { grid-template-columns: 1fr; }
+
+  /* Flow diagram → wraps */
+  .flow-diagram { flex-wrap: wrap; justify-content: center; gap: 0.8rem; }
+  .flow-arrow { display: none; }
+
+  /* Repo summary → stacked */
+  .repo-summary-body { grid-template-columns: 1fr; }
+  .repo-divider { width: 100%; height: 1px; margin: 1rem 0; align-self: auto; }
+
+  /* Header badge hidden at small widths */
+  .header-qnekt { display: none; }
+
+  /* Nav labels keep showing */
+  .site-nav { padding: 0 1rem; }
+  .site-nav-item { padding: 0 10px; font-size: 12px; gap: 5px; }
+}
+
+/* ── 768px: hide sidebar, use top-only nav ───────────────────── */
+@media (max-width: 768px) {
+  /* Collapse sidebar into a thin icon strip */
+  .sidebar, #slot-sidebar {
+    width: 52px;
+    min-width: 52px;
+    overflow: hidden;
+  }
+  /* Hide text labels, keep only icons */
+  .sidebar-item span,
+  .sidebar-label,
+  .sidebar-section,
+  .sidebar-divider,
+  .sidebar-sources,
+  .sidebar-item .count { display: none; }
+  .sidebar-item {
+    justify-content: center;
+    padding: 10px;
+    margin-bottom: 4px;
+  }
+  .sidebar-item svg { width: 18px; height: 18px; }
+  .sidebar-item.active { border-left: none; border-right: 3px solid var(--header); }
+
+  /* Main content fills remaining space */
+  .main { padding: 1.2rem; }
+
+  /* Metric rows → 2 columns */
+  .metrics-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  #page-historical .metrics-row { grid-template-columns: repeat(2, 1fr); }
+
+  /* Entry cards → 1 column */
+  .de-cards { grid-template-columns: 1fr; }
+
+  /* Form grid → 1 column */
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.full { grid-column: span 1; }
+
+  /* Historical summary → 2 columns */
+  .hist-summary-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Database toolbar wraps */
+  #de-database-panel > div:nth-child(4) { flex-wrap: wrap; }
+
+  /* Hub tabs scroll */
+  .de-hub-tabs { flex-wrap: nowrap; overflow-x: auto; gap: 4px; padding-bottom: 4px; }
+  .de-hub-tab  { flex-shrink: 0; font-size: 12px; padding: 8px 12px; }
+
+  /* Hist tabs scroll */
+  .hist-tab-bar { flex-wrap: nowrap; overflow-x: auto; }
+  .hist-tab { flex-shrink: 0; font-size: 12px; padding: 8px 10px; }
+
+  /* Report preview format tabs wrap */
+  .rpt-fmt-tab { font-size: 11px; padding: 5px 10px; }
+
+  /* Table horizontal scroll */
+  .table-wrap { overflow-x: auto; }
+  .table-wrap table { min-width: 600px; }
+
+  /* Nav labels truncate or hide svg */
+  .site-nav-item svg { display: none; }
+  .site-nav-item { font-size: 12px; padding: 0 8px; }
+
+  /* Header shrinks */
+  .site-header { height: 58px; padding: 0 1rem; }
+  .header-title { font-size: 18px; }
+  .header-univ-name { font-size: 9px; }
+}
+
+/* ── 560px: phone / very narrow window ──────────────────────── */
+@media (max-width: 560px) {
+  /* Stack metric cards to single column */
+  .metrics-row { grid-template-columns: 1fr; gap: 8px; }
+  #page-historical .metrics-row { grid-template-columns: 1fr; }
+
+  /* Historical summary → 1 column */
+  .hist-summary-grid { grid-template-columns: 1fr; }
+
+  /* Report cards already 1 col, just shrink padding */
+  .rpt-card { padding: 1rem; }
+
+  /* Main padding tighter */
+  .main { padding: 0.8rem; }
+
+  /* Page hero */
+  .page-hero-title { font-size: 20px; }
+
+  /* Hide sidebar entirely on very small screens */
+  .sidebar, #slot-sidebar { display: none; }
+
+  /* Nav wraps to 2 rows */
+  .site-nav { height: auto; flex-wrap: wrap; padding: 4px 0.5rem; }
+  .site-nav-item { height: 36px; font-size: 11px; padding: 0 6px; }
+
+  /* Hub tabs smaller */
+  .de-hub-tab { font-size: 11px; padding: 7px 8px; gap: 4px; }
+  .de-hub-tab svg { display: none; }
+
+  /* Database action buttons stack */
+  #de-database-panel > div:nth-child(4) > button { flex: 1 1 100%; }
+
+  /* Entry card actions stack */
+  .de-card-actions { flex-wrap: wrap; }
+  .de-btn-enter { width: 100%; }
+
+  /* Report export footer stacks */
+  .rpt-export-footer { flex-direction: column; align-items: stretch; }
+  .rpt-export-btn { width: 100%; justify-content: center; }
+
+  /* DB tabs scroll */
+  .tabs-local { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  .tab-btn { flex-shrink: 0; }
+}
