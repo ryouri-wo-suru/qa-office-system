@@ -69,17 +69,17 @@ const DATA_ENTRY_HTML = /* html */`
         <div class="de-metrics">
           <div class="de-metric">
             <div class="de-metric-label">Total Records</div>
-            <div class="de-metric-value">—</div>
+            <div class="de-metric-value" id="de-hub-total">0</div>
             <div class="de-metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
           </div>
           <div class="de-metric">
             <div class="de-metric-label">This Month</div>
-            <div class="de-metric-value">—</div>
+            <div class="de-metric-value" id="de-hub-month">0</div>
             <div class="de-metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg></div>
           </div>
           <div class="de-metric">
             <div class="de-metric-label">History Entries</div>
-            <div class="de-metric-value">—</div>
+            <div class="de-metric-value" id="de-hub-history">0</div>
             <div class="de-metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
           </div>
           <div class="de-metric">
@@ -98,7 +98,7 @@ const DATA_ENTRY_HTML = /* html */`
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--header2)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
               </div>
               <div>
-                <div class="de-card-title">Faculty Information</div>
+                <div class="de-card-title" id="de-card-title-faculty">Faculty Information</div>
                 <div class="de-card-desc">Basic faculty information, educational background, research &amp; extension activities, administrative positions and their effectivity</div>
               </div>
             </div>
@@ -111,8 +111,8 @@ const DATA_ENTRY_HTML = /* html */`
             </div>
             <div class="de-card-footer">
               <div class="de-card-stats">
-                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val">—</div></div>
-                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val">—</div></div>
+                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val" id="de-stat-faculty">0</div></div>
+                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val" id="de-last-faculty">—</div></div>
               </div>
               <div class="de-card-actions">
                 <button class="de-btn-enter" onclick="openDataEntry('faculty')">Enter Data →</button>
@@ -132,7 +132,7 @@ const DATA_ENTRY_HTML = /* html */`
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--green2)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
               </div>
               <div>
-                <div class="de-card-title">Student Information</div>
+                <div class="de-card-title" id="de-card-title-students">Student Information</div>
                 <div class="de-card-desc">Basic student information, degree program, classification, and demographic data</div>
               </div>
             </div>
@@ -145,8 +145,8 @@ const DATA_ENTRY_HTML = /* html */`
             </div>
             <div class="de-card-footer">
               <div class="de-card-stats">
-                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val">—</div></div>
-                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val">—</div></div>
+                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val" id="de-stat-students">0</div></div>
+                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val" id="de-last-students">—</div></div>
               </div>
               <div class="de-card-actions">
                 <button class="de-btn-enter" onclick="openDataEntry('student')">Enter Data →</button>
@@ -166,7 +166,7 @@ const DATA_ENTRY_HTML = /* html */`
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
               </div>
               <div>
-                <div class="de-card-title">Faculty Academic Load</div>
+                <div class="de-card-title" id="de-card-title-faculty-load">Faculty Academic Load</div>
                 <div class="de-card-desc">Faculty teaching loads, credit units, and course assignments per semester and trimester</div>
               </div>
             </div>
@@ -179,8 +179,8 @@ const DATA_ENTRY_HTML = /* html */`
             </div>
             <div class="de-card-footer">
               <div class="de-card-stats">
-                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val">—</div></div>
-                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val">—</div></div>
+                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val" id="de-stat-faculty_load">0</div></div>
+                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val" id="de-last-faculty_load">—</div></div>
               </div>
               <div class="de-card-actions">
                 <button class="de-btn-enter" onclick="openDataEntry('faculty-load')">Enter Data →</button>
@@ -200,7 +200,7 @@ const DATA_ENTRY_HTML = /* html */`
                 <svg viewBox="0 0 24 24" fill="none" stroke="#3a7bd5" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
               </div>
               <div>
-                <div class="de-card-title">Student Academic Load</div>
+                <div class="de-card-title" id="de-card-title-student-load">Student Academic Load</div>
                 <div class="de-card-desc">Student enrollment loads, credit units per semester, and academic performance data</div>
               </div>
             </div>
@@ -213,8 +213,8 @@ const DATA_ENTRY_HTML = /* html */`
             </div>
             <div class="de-card-footer">
               <div class="de-card-stats">
-                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val">—</div></div>
-                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val">—</div></div>
+                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val" id="de-stat-student_load">0</div></div>
+                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val" id="de-last-student_load">—</div></div>
               </div>
               <div class="de-card-actions">
                 <button class="de-btn-enter" onclick="openDataEntry('student-load')">Enter Data →</button>
@@ -234,7 +234,7 @@ const DATA_ENTRY_HTML = /* html */`
                 <svg viewBox="0 0 24 24" fill="none" stroke="#e87093" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </div>
               <div>
-                <div class="de-card-title">Research &amp; Extension</div>
+                <div class="de-card-title" id="de-card-title-research">Research &amp; Extension</div>
                 <div class="de-card-desc">Research personnel, project details, funding, publications, and extension activities</div>
               </div>
             </div>
@@ -247,8 +247,8 @@ const DATA_ENTRY_HTML = /* html */`
             </div>
             <div class="de-card-footer">
               <div class="de-card-stats">
-                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val">—</div></div>
-                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val">—</div></div>
+                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val" id="de-stat-research">0</div></div>
+                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val" id="de-last-research">—</div></div>
               </div>
               <div class="de-card-actions">
                 <button class="de-btn-enter" onclick="openDataEntry('research')">Enter Data →</button>
@@ -268,7 +268,7 @@ const DATA_ENTRY_HTML = /* html */`
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><circle cx="12" cy="10" r="2"/></svg>
               </div>
               <div>
-                <div class="de-card-title">Scholarships</div>
+                <div class="de-card-title" id="de-card-title-scholarships">Scholarships</div>
                 <div class="de-card-desc">Scholarship grantees, funding programs, grant types, amounts, and award status</div>
               </div>
             </div>
@@ -281,8 +281,8 @@ const DATA_ENTRY_HTML = /* html */`
             </div>
             <div class="de-card-footer">
               <div class="de-card-stats">
-                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val">—</div></div>
-                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val">—</div></div>
+                <div><div class="de-stat-label">Total Records</div><div class="de-stat-val" id="de-stat-scholarships">0</div></div>
+                <div><div class="de-stat-label">Last Entry</div><div class="de-stat-val" id="de-last-scholarships">—</div></div>
               </div>
               <div class="de-card-actions">
                 <button class="de-btn-enter" onclick="openDataEntry('scholarship')">Enter Data →</button>
@@ -374,7 +374,7 @@ const DATA_ENTRY_HTML = /* html */`
           <!-- Faculty Information -->
           <div class="table-wrap" id="db-fac">
             <table>
-              <thead><tr><th>Faculty ID</th><th>Full Name</th><th>Department / College</th><th>Rank / Designation</th><th>Employment Status</th><th>Highest Attainment</th><th>Years in Service</th><th>Specialization</th></tr></thead>
+              <thead><tr><th>Faculty ID</th><th>Full Name</th><th>Department / College</th><th>Rank / Designation</th><th>Employment Status</th><th>Highest Attainment</th><th>Years in Service</th><th>Specialization</th><th></th></tr></thead>
               <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
@@ -382,7 +382,7 @@ const DATA_ENTRY_HTML = /* html */`
           <!-- Student Information -->
           <div class="table-wrap" id="db-stu" style="display:none;">
             <table>
-              <thead><tr><th>Student ID</th><th>Full Name</th><th>Program / Course</th><th>Year Level</th><th>Enrollment Status</th><th>Sex</th><th>Date of Birth</th><th>Contact Number</th></tr></thead>
+              <thead><tr><th>Student ID</th><th>Full Name</th><th>Program / Course</th><th>Year Level</th><th>Enrollment Status</th><th>Sex</th><th>Date of Birth</th><th>Contact Number</th><th></th></tr></thead>
               <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
@@ -390,7 +390,7 @@ const DATA_ENTRY_HTML = /* html */`
           <!-- Faculty Academic Load -->
           <div class="table-wrap" id="db-fload" style="display:none;">
             <table>
-              <thead><tr><th>Faculty ID</th><th>Faculty Name</th><th>Academic Year</th><th>Semester</th><th>Teaching Units</th><th>Research Units</th><th>Extension Units</th><th>Admin Units</th><th>Classes Handled</th><th>Total Workload</th></tr></thead>
+              <thead><tr><th>Faculty ID</th><th>Faculty Name</th><th>Academic Year</th><th>Semester</th><th>Teaching Units</th><th>Research Units</th><th>Extension Units</th><th>Admin Units</th><th>Classes Handled</th><th>Total Workload</th><th></th></tr></thead>
               <tbody><tr><td colspan="10" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
@@ -398,7 +398,7 @@ const DATA_ENTRY_HTML = /* html */`
           <!-- Student Academic Load -->
           <div class="table-wrap" id="db-sload" style="display:none;">
             <table>
-              <thead><tr><th>Student ID</th><th>Student Name</th><th>Academic Year</th><th>Semester</th><th>Total Units</th><th>No. of Subjects</th><th>GWA</th><th>Load Status</th></tr></thead>
+              <thead><tr><th>Student ID</th><th>Student Name</th><th>Academic Year</th><th>Semester</th><th>Total Units</th><th>No. of Subjects</th><th>GWA</th><th>Load Status</th><th></th></tr></thead>
               <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
@@ -406,7 +406,7 @@ const DATA_ENTRY_HTML = /* html */`
           <!-- Research & Extension -->
           <div class="table-wrap" id="db-res" style="display:none;">
             <table>
-              <thead><tr><th>Personnel ID</th><th>Full Name</th><th>Role</th><th>Project Title</th><th>Funding Agency</th><th>Duration</th><th>Status</th><th>Budget (PHP)</th></tr></thead>
+              <thead><tr><th>Personnel ID</th><th>Full Name</th><th>Role</th><th>Project Title</th><th>Funding Agency</th><th>Duration</th><th>Status</th><th>Budget (PHP)</th><th></th></tr></thead>
               <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
@@ -414,12 +414,12 @@ const DATA_ENTRY_HTML = /* html */`
           <!-- Scholarships -->
           <div class="table-wrap" id="db-sch" style="display:none;">
             <table>
-              <thead><tr><th>Scholarship ID</th><th>Student Name</th><th>Student ID</th><th>Scholarship Program</th><th>Type</th><th>Grant Amount (PHP)</th><th>Academic Year</th><th>Status</th></tr></thead>
+              <thead><tr><th>Scholarship ID</th><th>Student Name</th><th>Student ID</th><th>Scholarship Program</th><th>Type</th><th>Grant Amount (PHP)</th><th>Academic Year</th><th>Status</th><th></th></tr></thead>
               <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
             </table>
           </div>
 
-          <div style="margin-top:0.8rem;font-size:12px;color:var(--muted);">No records found · Add data through the Data Entry tab</div>
+          <div id="db-record-count" style="margin-top:0.8rem;font-size:12px;color:var(--muted);">—</div>
         </div><!-- /de-database-panel -->
 
       </div><!-- /de-hub -->

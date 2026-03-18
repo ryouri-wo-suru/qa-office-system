@@ -41,7 +41,7 @@ const HISTORICAL_HTML = /* html */`
             </div>
             <span class="repo-label">Data Range</span>
           </div>
-          <span class="repo-value">—</span>
+          <span class="repo-value" id="hist-repo-range">—</span>
         </div>
         <div class="repo-row">
           <div class="repo-row-left">
@@ -50,7 +50,7 @@ const HISTORICAL_HTML = /* html */`
             </div>
             <span class="repo-label">Total Records</span>
           </div>
-          <span class="repo-value">—</span>
+          <span class="repo-value" id="hist-repo-total">—</span>
         </div>
         <div class="repo-row">
           <div class="repo-row-left">
@@ -59,7 +59,7 @@ const HISTORICAL_HTML = /* html */`
             </div>
             <span class="repo-label">Growth Rate</span>
           </div>
-          <span class="repo-value">—</span>
+          <span class="repo-value" id="hist-repo-growth">—</span>
         </div>
       </div>
 
@@ -70,19 +70,19 @@ const HISTORICAL_HTML = /* html */`
         <div class="repo-col-heading">Data Categories</div>
         <div class="repo-row" style="background:rgba(58,123,213,0.08);border-radius:8px;">
           <span class="repo-label" style="padding-left:4px;">Student Records</span>
-          <span class="repo-value">—</span>
+          <span class="repo-value" id="hist-repo-students">—</span>
         </div>
         <div class="repo-row" style="background:rgba(14,96,33,0.08);border-radius:8px;">
           <span class="repo-label" style="padding-left:4px;">Faculty Records</span>
-          <span class="repo-value">—</span>
+          <span class="repo-value" id="hist-repo-faculty">—</span>
         </div>
         <div class="repo-row" style="border-radius:8px;">
           <span class="repo-label" style="padding-left:4px;">Research Records</span>
-          <span class="repo-value">—</span>
+          <span class="repo-value" id="hist-repo-research">—</span>
         </div>
         <div class="repo-row" style="background:rgba(246,172,29,0.08);border-radius:8px;">
           <span class="repo-label" style="padding-left:4px;">Scholarship Records</span>
-          <span class="repo-value">—</span>
+          <span class="repo-value" id="hist-repo-scholarships">—</span>
         </div>
       </div>
 
@@ -95,8 +95,8 @@ const HISTORICAL_HTML = /* html */`
     <div class="metric-card c-blue">
       <div class="metric-left">
         <div class="metric-label">Total Students</div>
-        <div class="metric-value" style="font-size:20px;color:var(--muted);">—</div>
-        <div class="metric-note">No data connected</div>
+        <div class="metric-value" id="hist-val-students" style="font-size:20px;">0</div>
+        <div class="metric-note" id="hist-note-students">No records yet</div>
       </div>
       <div class="metric-icon blue">
         <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
@@ -106,8 +106,8 @@ const HISTORICAL_HTML = /* html */`
     <div class="metric-card c-green">
       <div class="metric-left">
         <div class="metric-label">Faculty Members</div>
-        <div class="metric-value" style="font-size:20px;color:var(--muted);">—</div>
-        <div class="metric-note">No data connected</div>
+        <div class="metric-value" id="hist-val-faculty" style="font-size:20px;">0</div>
+        <div class="metric-note" id="hist-note-faculty">No records yet</div>
       </div>
       <div class="metric-icon green">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
@@ -117,8 +117,8 @@ const HISTORICAL_HTML = /* html */`
     <div class="metric-card c-red">
       <div class="metric-left">
         <div class="metric-label">Active Researchers</div>
-        <div class="metric-value" style="font-size:20px;color:var(--muted);">—</div>
-        <div class="metric-note">No data connected</div>
+        <div class="metric-value" id="hist-val-research" style="font-size:20px;">0</div>
+        <div class="metric-note" id="hist-note-research">No records yet</div>
       </div>
       <div class="metric-icon red">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -128,8 +128,8 @@ const HISTORICAL_HTML = /* html */`
     <div class="metric-card c-gold">
       <div class="metric-left">
         <div class="metric-label">Data Points</div>
-        <div class="metric-value" style="font-size:20px;color:var(--muted);">—</div>
-        <div class="metric-note">No data connected</div>
+        <div class="metric-value" id="hist-val-total" style="font-size:20px;">0</div>
+        <div class="metric-note" id="hist-note-total">No records yet</div>
       </div>
       <div class="metric-icon gold">
         <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
@@ -172,23 +172,23 @@ const HISTORICAL_HTML = /* html */`
     <div class="hist-summary-grid">
       <div class="hist-summary-card">
         <div class="hist-summary-label">Total Enrollment (Latest AY)</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-stu-total">0</div>
+        <div class="hist-summary-note" id="hs-stu-total-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Regular Students</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-stu-regular">0</div>
+        <div class="hist-summary-note" id="hs-stu-regular-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Irregular Students</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-stu-irregular">0</div>
+        <div class="hist-summary-note" id="hs-stu-irregular-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Year-on-Year Change</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-stu-yoy">—</div>
+        <div class="hist-summary-note" id="hs-stu-yoy-note">No records yet</div>
       </div>
     </div></div>
 
@@ -217,23 +217,23 @@ const HISTORICAL_HTML = /* html */`
     <div class="hist-summary-grid">
       <div class="hist-summary-card">
         <div class="hist-summary-label">Total Faculty (Latest AY)</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-fac-total">0</div>
+        <div class="hist-summary-note" id="hs-fac-total-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Regular / Permanent</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-fac-regular">0</div>
+        <div class="hist-summary-note" id="hs-fac-regular-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">With Doctoral Degree</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-fac-doctoral">0</div>
+        <div class="hist-summary-note" id="hs-fac-doctoral-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Year-on-Year Change</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-fac-yoy">—</div>
+        <div class="hist-summary-note" id="hs-fac-yoy-note">No records yet</div>
       </div>
     </div></div>
 
@@ -262,23 +262,23 @@ const HISTORICAL_HTML = /* html */`
     <div class="hist-summary-grid">
       <div class="hist-summary-card">
         <div class="hist-summary-label">Ongoing Projects</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-res-ongoing">0</div>
+        <div class="hist-summary-note" id="hs-res-ongoing-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Completed Projects</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-res-completed">0</div>
+        <div class="hist-summary-note" id="hs-res-completed-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Total Publications</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-res-pubs">—</div>
+        <div class="hist-summary-note" id="hs-res-pubs-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Extension Activities</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-res-ext">—</div>
+        <div class="hist-summary-note" id="hs-res-ext-note">No records yet</div>
       </div>
     </div></div>
 
@@ -307,23 +307,23 @@ const HISTORICAL_HTML = /* html */`
     <div class="hist-summary-grid">
       <div class="hist-summary-card">
         <div class="hist-summary-label">Overall Retention Rate</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-ret-rate">—</div>
+        <div class="hist-summary-note" id="hs-ret-rate-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Graduation Rate</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-ret-grad">—</div>
+        <div class="hist-summary-note" id="hs-ret-grad-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">Dropout Rate</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-ret-dropout">—</div>
+        <div class="hist-summary-note" id="hs-ret-dropout-note">No records yet</div>
       </div>
       <div class="hist-summary-card">
         <div class="hist-summary-label">LOA Rate</div>
-        <div class="hist-summary-value">—</div>
-        <div class="hist-summary-note">No data connected</div>
+        <div class="hist-summary-value" id="hs-ret-loa">—</div>
+        <div class="hist-summary-note" id="hs-ret-loa-note">No records yet</div>
       </div>
     </div></div>
 

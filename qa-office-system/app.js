@@ -1,193 +1,60 @@
-/* ================================================================
-   Q-Nekt · UPOU Quality Assurance System · Application Logic
-   ================================================================
-   This file contains all the JavaScript that powers the Q-Nekt
-   system. It is split into 9 modules, each handling a specific
-   part of the application.
-
-   Modules
-     [1] Data Source Status    Updates the sidebar connection dots
-     [2] Initialisation        Runs once on page load (academic year,
-                               semester label, source dot setup)
-     [3] Navigation            Switches between pages; keeps the top
-                               nav and sidebar in sync
-     [4] Data Panel Tabs       Switches sub-panels inside data entry forms
-     [5] Database              Switches database table tabs and updates
-                               the status filter options per table
-     [6] Activity Log          Records every save / import / export action
-                               and displays them in the Recent Activity tab
-     [7] Data Entry Hub        Controls the three hub tabs (Data Entry,
-                               Database, Recent Activity) and manages
-                               opening / closing individual data forms
-     [8] Reports               Handles report generation, export, the
-                               report preview panel, and the recent
-                               reports log
-     [9] Notifications         Shows the brief toast notification that
-                               appears at the bottom-right of the screen
-   ================================================================ */
+/* Q-Nekt · Application Logic
+   Modules: [1] Init  [2] Navigation  [3] Data Tabs  [4] Database
+            [5] Activity Log  [6] Data Entry Hub  [7] Reports  [8] Notifications */
 
 
-/* ================================================================
-   MODULE 1 · DATA SOURCE STATUS
-   ================================================================
-   The sidebar shows five data source connections (OUR, FoS, OSA,
-   PIVOT/HR, R&E Personnel). Each has a coloured dot and a status
-   label. This module controls those indicators.
+// --- 1. INIT ---
 
-   Usage: setSourceStatus('our', 'connected')
-   States: 'connected' | 'syncing' | 'error' | 'disconnected'
-   ================================================================ */
-
-// Human-readable label for each connection state
-const SOURCE_LABELS = {
-  connected:    '● Online',
-  syncing:      '● Syncing',
-  error:        '● Error',
-  disconnected: 'Not connected',
-};
-
-/**
- * Updates the colour dot and text label for a data source in the sidebar.
- * @param {string} id    - Source ID: 'our' | 'fos' | 'osa' | 'pivot' | 'rne'
- * @param {string} state - Connection state (see SOURCE_LABELS above)
- */
-function setSourceStatus(id, state) {
-  const dot    = document.getElementById('dot-'    + id);
-  const status = document.getElementById('status-' + id);
-  if (!dot || !status) return;
-  dot.className      = 'source-dot '    + state;
-  status.className   = 'source-status ' + state;
-  status.textContent = SOURCE_LABELS[state] || 'Not connected';
-}
-
-
-/* ================================================================
-   MODULE 2 · INITIALISATION
-   ================================================================
-   Called by loader.js after all HTML templates have been injected
-   into the page. Sets up the initial state of the application:
-     - All data source dots start as "Not connected"
-     - The sidebar shows the current academic year and semester
-       based on today's date (Philippine academic calendar)
-   ================================================================ */
-
-/**
- * Main entry point — called automatically by loader.js on page load.
- * Do not call this manually; loader.js handles the timing.
- */
 function initQNekt() {
-  // Mark all five data sources as disconnected on first load
-  ['our', 'fos', 'osa', 'pivot', 'rne'].forEach(id => setSourceStatus(id, 'disconnected'));
-
-  // Work out the current academic year and semester using today's date.
-  // Philippine academic calendar:
-  //   Aug–Dec  →  1st Semester   (AY starts in August)
-  //   Jan–May  →  2nd Semester
-  //   Jun–Jul  →  Summer
   const now     = new Date();
-  const month   = now.getMonth() + 1; // getMonth() returns 0-indexed, so +1
+  const month   = now.getMonth() + 1;
   const year    = now.getFullYear();
-  const ayStart = month >= 8 ? year : year - 1; // AY starts in August
-  const ayEnd   = ayStart + 1;
-
-  let sem;
-  if      (month >= 8 && month <= 12) sem = '1st Semester';
-  else if (month >= 1 && month <= 5)  sem = '2nd Semester';
-  else                                sem = 'Summer';
-
-  // Write the AY and semester into the sidebar labels
-  const ayEl  = document.getElementById('sidebar-ay');
-  const semEl = document.getElementById('sidebar-sem');
-  if (ayEl)  ayEl.textContent  = 'AY ' + ayStart + '\u2013' + ayEnd;
-  if (semEl) semEl.textContent = sem;
+  const ayStart = month >= 8 ? year : year - 1;
+  const ayEl    = document.getElementById('sidebar-ay');
+  if (ayEl) ayEl.textContent = 'AY ' + ayStart + '\u2013' + (ayStart + 1);
 }
 
 
-/* ================================================================
-   MODULE 3 · NAVIGATION
-   ================================================================
-   The app has four pages: Dashboard, Data Entry, Reports, and
-   Historical Data. Both the top nav bar and the sidebar link to
-   the same pages; clicking either one switches the page and keeps
-   both navigation elements in sync.
-   ================================================================ */
+// --- 3. NAVIGATION ---
 
-/**
- * Shows the selected page, highlights its nav item in both the top
- * nav bar and the sidebar, and resets the page to its first tab so
- * the landing state is always clean and the first tab is highlighted.
- * @param {string} id - Page ID: 'dashboard' | 'data-entry' | 'reports' | 'historical'
- */
 function showPage(id) {
-  // Hide all pages, then reveal only the requested one
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('page-' + id);
   if (page) page.classList.add('active');
 
-  // Highlight the matching button in the top navigation bar
   document.querySelectorAll('.site-nav-item').forEach(b => {
     b.classList.toggle('active', b.dataset.page === id);
   });
-
-  // Highlight the matching item in the sidebar
   document.querySelectorAll('.sidebar-item[data-page]').forEach(s => {
     s.classList.toggle('active', s.dataset.page === id);
   });
 
-  // Reset the landing tab for pages that have hub tabs
   if (id === 'data-entry') {
-    // Always land on the "Data Entry" hub tab and show the hub (not a form)
     const firstTab = document.querySelector('#de-hub .de-hub-tab');
     if (firstTab) switchHubTab('entry', firstTab);
-    // Ensure we're showing the hub, not a form
-    const hub  = document.getElementById('de-hub');
-    const form = document.getElementById('de-form');
-    if (hub)  hub.style.display  = 'block';
-    if (form) form.style.display = 'none';
+    document.getElementById('de-hub').style.display  = 'block';
+    document.getElementById('de-form').style.display = 'none';
   }
-
   if (id === 'reports') {
-    // Always land on the "Report Types" tab and show the hub (not a preview)
     const firstTab = document.querySelector('#page-reports .de-hub-tab');
     if (firstTab) switchRptTab('types', firstTab);
-    // Ensure we're showing the hub, not a report preview
-    const hub     = document.getElementById('rpt-hub');
-    const preview = document.getElementById('rpt-preview');
-    if (hub)     hub.style.display     = 'block';
-    if (preview) preview.style.display = 'none';
+    document.getElementById('rpt-hub').style.display     = 'block';
+    document.getElementById('rpt-preview').style.display = 'none';
   }
-
   if (id === 'historical') {
-    // Always land on the first "Student Data" tab
     const firstTab = document.querySelector('.hist-tab');
     if (firstTab) switchHistTab('student', firstTab);
   }
 }
 
-// Legacy shim — kept so any old inline onclick="setSidebarActive(...)" calls
-// don't throw errors. The function no longer needs to do anything.
-function setSidebarActive(el) {}
+function setSidebarActive(el) {} // legacy shim — no-op
 
 
-/* ================================================================
-   MODULE 4 · DATA PANEL TABS
-   ================================================================
-   Each data entry form (Faculty, Student, etc.) is a separate
-   "panel" inside the form view. This function activates the
-   correct panel and highlights its tab button when a tab is clicked.
-   ================================================================ */
+// --- 4. DATA PANEL TABS ---
 
-/**
- * Switches the visible sub-panel inside a data entry form.
- * @param {string} tab - Panel ID suffix, e.g. 'faculty', 'student'
- * @param {HTMLElement} btn - The tab button that was clicked
- */
 function showDataTab(tab, btn) {
-  // Hide all panels, then show the selected one
   document.querySelectorAll('.data-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + tab).classList.add('active');
-
-  // Update the tab button highlight within the same tab group
   if (btn) {
     btn.closest('.tabs-local').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -195,78 +62,17 @@ function showDataTab(tab, btn) {
 }
 
 
-/* ================================================================
-   MODULE 5 · DATABASE
-   ================================================================
-   The Database panel inside Data Entry shows four tables: Faculty,
-   Students, Scholarships, and Research. Switching between them
-   also updates the Status filter dropdown to show options relevant
-   to the selected table (e.g. "On Leave" only applies to Faculty).
-   ================================================================ */
+// --- 5. DATABASE ---
 
-// Status filter options per database tab.
-// Each list matches the Status field options in the corresponding data entry form.
 const DB_STATUS_OPTIONS = {
-  fac:   ['All Status', 'Regular', 'Contractual', 'Part-time', 'Visiting'],        // Employment Status from Faculty form
-  stu:   ['All Status', 'Regular', 'Irregular', 'Cross Enrollee', 'Returnee'],     // Enrollment Status from Student form
-  fload: ['All Status', '1st Semester', '2nd Semester', 'Summer'],                 // Semester from Faculty Load form
-  sload: ['All Status', 'Regular Load', 'Overload', 'Underload'],                  // Load Status from Student Load form
-  res:   ['All Status', 'Ongoing', 'Completed', 'On Hold', 'Proposed'],            // Status from Research form
-  sch:   ['All Status', 'Active', 'Terminated', 'On Probation', 'Completed'],      // Status from Scholarship form
+  fac:   ['All Status', 'Regular', 'Contractual', 'Part-time', 'Visiting'],
+  stu:   ['All Status', 'Regular', 'Irregular', 'Cross Enrollee', 'Returnee'],
+  fload: ['All Status', '1st Semester', '2nd Semester', 'Summer'],
+  sload: ['All Status', 'Regular Load', 'Overload', 'Underload'],
+  res:   ['All Status', 'Ongoing', 'Completed', 'On Hold', 'Proposed'],
+  sch:   ['All Status', 'Active', 'Terminated', 'On Probation', 'Completed'],
 };
 
-/**
- * Switches the visible database table and refreshes the status filter.
- * Also updates currentDbTab so the toolbar buttons know which tab is active.
- * @param {string} tab - Table key: 'fac' | 'stu' | 'fload' | 'sload' | 'res' | 'sch'
- * @param {HTMLElement} btn - The tab button that was clicked
- */
-function showDbTab(tab, btn) {
-  currentDbTab = tab;
-
-  // Show only the selected table, hide the others
-  ['fac', 'stu', 'fload', 'sload', 'res', 'sch'].forEach(t => {
-    const el = document.getElementById('db-' + t);
-    if (el) el.style.display = t === tab ? 'block' : 'none';
-  });
-
-  // Highlight the active tab button
-  if (btn) {
-    btn.closest('.tabs-local').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  // Replace the status filter options with ones relevant to this table
-  const sel = document.getElementById('db-status-filter');
-  if (sel && DB_STATUS_OPTIONS[tab]) {
-    sel.innerHTML = DB_STATUS_OPTIONS[tab]
-      .map((opt, i) => `<option value="${i === 0 ? '' : opt}">${opt}</option>`)
-      .join('');
-  }
-}
-
-/**
- * Navigates to the Reports page and immediately opens the report
- * preview for the given report type. Used by the report icon buttons
- * on the Data Entry cards.
- * @param {string} type - Report key
- */
-function goToReport(type) {
-  showPage('reports');
-  generateReport(type);
-}
-
-/**
- * Navigates to the Data Entry page and opens the form for the given panel.
- * Used by the "Enter Data" buttons on the Reports cards and DB toolbar.
- * @param {string} panel - Panel key matching DE_FORM_META
- */
-function goToDataEntry(panel) {
-  showPage('data-entry');
-  openDataEntry(panel);
-}
-
-// Maps each active database tab key to its data entry panel and report type
 const DB_TAB_MAP = {
   fac:   { entry: 'faculty',      report: 'faculty'      },
   stu:   { entry: 'student',      report: 'student'      },
@@ -276,63 +82,44 @@ const DB_TAB_MAP = {
   sch:   { entry: 'scholarship',  report: 'scholarship'  },
 };
 
-// Tracks which database tab is currently active
 let currentDbTab = 'fac';
 
-/**
- * Quick-access Enter Data from the Database toolbar.
- * Opens the data entry form matching the currently active db tab.
- */
-function dbQuickEnter() {
-  const map = DB_TAB_MAP[currentDbTab] || DB_TAB_MAP['fac'];
-  goToDataEntry(map.entry);
+function showDbTab(tab, btn) {
+  currentDbTab = tab;
+  ['fac', 'stu', 'fload', 'sload', 'res', 'sch'].forEach(t => {
+    const el = document.getElementById('db-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  if (btn) {
+    btn.closest('.tabs-local').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const sel = document.getElementById('db-status-filter');
+  if (sel && DB_STATUS_OPTIONS[tab]) {
+    sel.innerHTML = DB_STATUS_OPTIONS[tab]
+      .map((opt, i) => `<option value="${i === 0 ? '' : opt}">${opt}</option>`)
+      .join('');
+  }
 }
 
-/**
- * Quick-access Generate Report from the Database toolbar.
- * Opens the report preview matching the currently active db tab.
- */
-function dbQuickReport() {
-  const map = DB_TAB_MAP[currentDbTab] || DB_TAB_MAP['fac'];
-  goToReport(map.report);
-}
+function goToReport(type)     { showPage('reports');    generateReport(type);  }
+function goToDataEntry(panel) { showPage('data-entry'); openDataEntry(panel);  }
+function dbQuickEnter()       { goToDataEntry((DB_TAB_MAP[currentDbTab] || DB_TAB_MAP.fac).entry);  }
+function dbQuickReport()      { goToReport((DB_TAB_MAP[currentDbTab]    || DB_TAB_MAP.fac).report); }
 
-
-/**
- * Navigates to the Data Entry page, opens the Database tab, and
- * jumps directly to the table matching the clicked card.
- * Used by the "View Records" icon buttons on the entry cards.
- * @param {string} tab - Table key: 'fac' | 'stu' | 'fload' | 'sload' | 'res' | 'sch'
- */
 function viewDbRecords(tab) {
   showPage('data-entry');
-
-  // Open the Database hub tab
   const dbTabBtn = document.querySelector('.de-hub-tab[onclick*="database"]');
   if (dbTabBtn) switchHubTab('database', dbTabBtn);
-
-  // Jump to the correct table within the database panel
   const subTabBtn = document.querySelector(`#de-database-panel .tab-btn[onclick*="'${tab}'"]`);
   if (subTabBtn) showDbTab(tab, subTabBtn);
 }
 
 
-/* ================================================================
-   MODULE 6 · ACTIVITY LOG
-   ================================================================
-   Every time a user saves a record, imports data, exports a file,
-   or performs a batch update, an entry is added to the activity log.
-   The log is displayed in the "Recent Activity" tab of Data Entry
-   and can be filtered by action type and data category.
+// --- 6. ACTIVITY LOG ---
 
-   Activity types: 'update' | 'batch' | 'import' | 'export' | 'create'
-   ================================================================ */
-
-// In-memory array that stores all activity entries for the current session.
-// Each entry: { type, category, detail, time, date, ts }
 const activityLog = [];
 
-// SVG icons shown next to each activity entry in the log list
 const ACT_ICONS = {
   update: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg>`,
   batch:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8"/><path d="M12 3v4"/></svg>`,
@@ -341,226 +128,130 @@ const ACT_ICONS = {
   create: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
 };
 
-// Display labels shown on each activity entry pill badge
 const ACT_LABELS = {
-  update: 'Update',
-  batch:  'Batch Update',
-  import: 'Import',
-  export: 'Export',
-  create: 'New Record',
+  update: 'Update', batch: 'Batch Update', import: 'Import', export: 'Export', create: 'New Record',
 };
 
-/**
- * Adds a new entry to the activity log.
- * Called automatically by notify() whenever an action is performed.
- * @param {string} type     - Activity type key (see ACT_LABELS above)
- * @param {string} category - Data category, e.g. 'Faculty Information'
- * @param {string} detail   - Human-readable description of what happened
- */
 function logActivity(type, category, detail) {
-  const now  = new Date();
-  const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  const date = now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
-  // Prepend so the newest entry always appears at the top
-  activityLog.unshift({ type, category, detail, time, date, ts: now.getTime() });
+  const now = new Date();
+  activityLog.unshift({
+    type, category, detail,
+    time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    date: now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }),
+    ts:   now.getTime(),
+  });
   updateActivityBadge();
   renderActivity();
+  const el = document.getElementById('de-hub-history');
+  if (el) el.textContent = activityLog.length;
 }
 
-/**
- * Updates the numeric badge on the "Recent Activity" tab button.
- * Shows the total count, capped at "99+".
- */
 function updateActivityBadge() {
   const badge = document.getElementById('activity-badge');
   if (!badge) return;
-  const count = activityLog.length;
-  badge.textContent   = count > 99 ? '99+' : count;
-  badge.style.display = count > 0 ? 'inline-block' : 'none';
+  badge.textContent   = activityLog.length > 99 ? '99+' : activityLog.length;
+  badge.style.display = activityLog.length > 0 ? 'inline-block' : 'none';
 }
 
-/**
- * Re-renders the activity list based on the current filter selections.
- * Shows an empty-state message if there are no matching entries.
- */
 function renderActivity() {
   const list  = document.getElementById('act-list');
   const empty = document.getElementById('act-empty');
   if (!list || !empty) return;
 
-  // Read the current filter values (empty string means "show all")
   const typeFilter = document.getElementById('act-filter-type').value;
   const catFilter  = document.getElementById('act-filter-cat').value;
-
-  const filtered = activityLog.filter(a =>
-    (!typeFilter || a.type     === typeFilter) &&
-    (!catFilter  || a.category === catFilter)
+  const filtered   = activityLog.filter(a =>
+    (!typeFilter || a.type === typeFilter) && (!catFilter || a.category === catFilter)
   );
 
-  if (filtered.length === 0) {
-    empty.style.display = 'flex';
-    list.innerHTML = '';
-    return;
-  }
-
+  if (filtered.length === 0) { empty.style.display = 'flex'; list.innerHTML = ''; return; }
   empty.style.display = 'none';
   list.innerHTML = filtered.map(a => `
     <div class="act-item">
       <div class="act-icon ${a.type}">${ACT_ICONS[a.type] || ''}</div>
       <div class="act-body">
         <div class="act-title">${a.detail}</div>
-        <div class="act-meta">
-          <span>${a.category}</span>
-          <span>${a.date} · ${a.time}</span>
-        </div>
+        <div class="act-meta"><span>${a.category}</span><span>${a.date} · ${a.time}</span></div>
       </div>
       <span class="act-type-pill ${a.type}">${ACT_LABELS[a.type] || a.type}</span>
     </div>`).join('');
 }
 
-/** Clears all entries from the activity log and resets the badge. */
-function clearActivityLog() {
-  activityLog.length = 0;
-  updateActivityBadge();
-  renderActivity();
-}
+function clearActivityLog() { activityLog.length = 0; updateActivityBadge(); renderActivity(); }
 
 
-/* ================================================================
-   MODULE 7 · DATA ENTRY HUB
-   ================================================================
-   The Data Entry page has a hub view with three tabs:
-     - "Data Entry"      — Six category cards (Faculty, Student, etc.)
-     - "Database"        — Searchable tables of stored records
-     - "Recent Activity" — Log of all actions taken this session
+// --- 7. DATA ENTRY HUB ---
 
-   Clicking "Enter Data →" on a card hides the hub and opens a
-   dedicated form for that data category. The "← Back" button
-   returns to the hub.
-   ================================================================ */
+const DE_FORM_META = {
+  'faculty':      { title: 'Faculty Information',   source: 'Source: PIVOT/HR System' },
+  'student':      { title: 'Student Information',   source: 'Source: AIMS System' },
+  'research':     { title: 'Research & Extension',  source: 'Source: Research & Extension Office / PIVOT' },
+  'scholarship':  { title: 'Scholarships',          source: 'Source: Student Affairs / Registrar' },
+  'student-load': { title: 'Student Academic Load', source: 'Source: Registrar / AIMS' },
+  'faculty-load': { title: 'Faculty Academic Load', source: "Source: PIVOT/HR / Dean's Office" },
+};
 
-/**
- * Switches between the three tabs in the Data Entry hub.
- * @param {string} tab - Tab name: 'entry' | 'database' | 'activity'
- * @param {HTMLElement} btn - The tab button that was clicked
- */
 function switchHubTab(tab, btn) {
-  // Update the active tab button highlight
   document.querySelectorAll('.de-hub-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-
-  // Show the matching panel, hide the others
   document.getElementById('de-entry-panel').style.display    = tab === 'entry'    ? 'block' : 'none';
   document.getElementById('de-database-panel').style.display = tab === 'database' ? 'block' : 'none';
   document.getElementById('de-activity-panel').style.display = tab === 'activity' ? 'block' : 'none';
-
-  // Always re-render the activity list when opening that tab,
-  // so it reflects the latest entries and filter state
   if (tab === 'activity') renderActivity();
 }
 
-// Maps each data entry panel key to a human-readable title and the
-// source system that provides the data (shown below the form title)
-const DE_FORM_META = {
-  'faculty':      { title: 'Faculty Information',    source: 'Source: PIVOT/HR System' },
-  'student':      { title: 'Student Information',    source: 'Source: AIMS System' },
-  'research':     { title: 'Research & Extension',   source: 'Source: Research & Extension Office / PIVOT' },
-  'scholarship':  { title: 'Scholarships',           source: 'Source: Student Affairs / Registrar' },
-  'student-load': { title: 'Student Academic Load',  source: 'Source: Registrar / AIMS' },
-  'faculty-load': { title: 'Faculty Academic Load',  source: "Source: PIVOT/HR / Dean's Office" },
-};
-
-/**
- * Hides the hub view and opens the data entry form for the given panel.
- * @param {string} panel - Panel key (see DE_FORM_META above)
- */
 function openDataEntry(panel) {
-  // Swap hub ↔ form visibility
   document.getElementById('de-hub').style.display  = 'none';
   document.getElementById('de-form').style.display = 'block';
-
-  // Set the form header title and source system label
   const meta = DE_FORM_META[panel] || {};
   document.getElementById('de-form-title').textContent  = meta.title  || '';
   document.getElementById('de-form-source').textContent = meta.source || '';
-
-  // Activate the correct form panel (e.g. panel-faculty, panel-student)
   document.querySelectorAll('.data-panel').forEach(p => p.classList.remove('active'));
   const target = document.getElementById('panel-' + panel);
   if (target) target.classList.add('active');
 }
 
-/**
- * Switches between the four tabs on the Historical Data page:
- * Student Data, Faculty Data, Research Data, Retention Rates.
- * @param {string} tab - 'student' | 'faculty' | 'research' | 'retention'
- * @param {HTMLElement} btn - The tab button that was clicked
- */
-function switchHistTab(tab, btn) {
-  // Update tab button highlight
-  document.querySelectorAll('.hist-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  // Show the matching panel, hide the others
-  document.querySelectorAll('.hist-panel').forEach(p => p.classList.remove('active'));
-  const panel = document.getElementById('hist-' + tab);
-  if (panel) panel.classList.add('active');
-}
-
-
-/** Returns from the data entry form back to the hub view. */
 function closeDataEntry() {
   document.getElementById('de-form').style.display = 'none';
   document.getElementById('de-hub').style.display  = 'block';
 }
 
+function switchHistTab(tab, btn) {
+  document.querySelectorAll('.hist-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.hist-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('hist-' + tab);
+  if (panel) panel.classList.add('active');
+  if (typeof refreshHistoricalData === 'function') refreshHistoricalData();
+}
 
-/* ================================================================
-   MODULE 8 · REPORTS
-   ================================================================
-   The Reports page lets users generate QA reports from stored data.
-   There are five report types (Faculty, Student, Scholarships,
-   Research & Publication, R&E Personnel). Each has a "Generate
-   Report" button that opens a preview panel with export options
-   (PDF, Excel, CSV).
 
-   Every generated report is recorded in the "Recent Reports" log
-   tab, filterable by report type and export format.
+// --- 8. REPORTS ---
 
-   Note: All data fields show "—" until a backend is connected.
-   The report layout and structure are fully in place and ready.
-   ================================================================ */
-
-// In-memory list of reports generated this session.
-// Each entry: { title, format, date, time, status }
 const reportLog = [];
 
-// Title and "no data" subtitle for each report type,
-// displayed in the preview panel header
 const RPT_META = {
-  faculty:      { title: 'Faculty Report',                            sub: 'No data available. Connect a data source to generate this report.' },
-  student:      { title: 'Student Report',                            sub: 'No data available. Connect a data source to generate this report.' },
-  scholarship:  { title: 'Scholarships Report',                       sub: 'No data available. Connect a data source to generate this report.' },
-  research:     { title: 'Research &amp; Publication Report',         sub: 'No data available. Connect a data source to generate this report.' },
-  personnel:    { title: 'Research &amp; Extension Personnel Report', sub: 'No data available. Connect a data source to generate this report.' },
-  'faculty-load': { title: 'Faculty Academic Load Report',            sub: 'No data available. Connect a data source to generate this report.' },
-  'student-load': { title: 'Student Academic Load Report',            sub: 'No data available. Connect a data source to generate this report.' },
+  faculty:        { title: 'Faculty Report',                            sub: 'No data available. Connect a data source to generate this report.' },
+  student:        { title: 'Student Report',                            sub: 'No data available. Connect a data source to generate this report.' },
+  scholarship:    { title: 'Scholarships Report',                       sub: 'No data available. Connect a data source to generate this report.' },
+  research:       { title: 'Research &amp; Publication Report',         sub: 'No data available. Connect a data source to generate this report.' },
+  personnel:      { title: 'Research &amp; Extension Personnel Report', sub: 'No data available. Connect a data source to generate this report.' },
+  'faculty-load': { title: 'Faculty Academic Load Report',              sub: 'No data available. Connect a data source to generate this report.' },
+  'student-load': { title: 'Student Academic Load Report',              sub: 'No data available. Connect a data source to generate this report.' },
 };
 
-// HTML rendered inside the report document panel for each report type.
-// Shows field labels with "—" as placeholder values.
-// Replace "—" with live values once a backend data source is connected.
 const RPT_DOC = {
   faculty: `<h3>Faculty Profile Summary</h3>
     <div class="doc-row"><span class="doc-label">Total Faculty</span><span style="color:var(--muted)">—</span></div>
     <div class="doc-row"><span class="doc-label">Regular / Permanent</span><span style="color:var(--muted)">—</span></div>
     <div class="doc-row"><span class="doc-label">Contractual / Part-time</span><span style="color:var(--muted)">—</span></div>
     <div class="doc-row"><span class="doc-label">With Doctoral Degree</span><span style="color:var(--muted)">—</span></div>
-    <div class="doc-row"><span class="doc-label">With Master\'s Degree</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">With Master's Degree</span><span style="color:var(--muted)">—</span></div>
     <h3 style="margin-top:1rem;">Rank Distribution</h3>
-    <div class="doc-row"><span class="doc-label">Professor I–VI</span><span style="color:var(--muted)">—</span></div>
-    <div class="doc-row"><span class="doc-label">Associate Professor I–V</span><span style="color:var(--muted)">—</span></div>
-    <div class="doc-row"><span class="doc-label">Assistant Professor I–IV</span><span style="color:var(--muted)">—</span></div>
-    <div class="doc-row"><span class="doc-label">Instructor I–III</span><span style="color:var(--muted)">—</span></div>`,
+    <div class="doc-row"><span class="doc-label">Professor I\u2013VI</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Associate Professor I\u2013V</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Assistant Professor I\u2013IV</span><span style="color:var(--muted)">—</span></div>
+    <div class="doc-row"><span class="doc-label">Instructor I\u2013III</span><span style="color:var(--muted)">—</span></div>`,
   student: `<h3>Student Profile Summary</h3>
     <div class="doc-row"><span class="doc-label">Total Students</span><span style="color:var(--muted)">—</span></div>
     <div class="doc-row"><span class="doc-label">Regular Students</span><span style="color:var(--muted)">—</span></div>
@@ -611,153 +302,289 @@ const RPT_DOC = {
     <div class="doc-row"><span class="doc-label">Partner Communities</span><span style="color:var(--muted)">—</span></div>`,
 };
 
-// Tracks which report type is currently open in the preview panel,
-// so exportReport() knows what to label the export action
+const RPT_FIELDS = {
+  faculty:        ['Total Faculty','Regular / Permanent','Contractual / Part-time','With Doctoral Degree',"With Master's Degree",'Professor I\u2013VI','Associate Professor I\u2013V','Assistant Professor I\u2013IV','Instructor I\u2013III'],
+  student:        ['Total Students','Regular Students','Irregular Students','1st Year','2nd Year','3rd Year','4th Year & above'],
+  scholarship:    ['Total Active Grantees','Full Grants','Partial Grants','CHED','DOST-SEI','LGU / Local Government'],
+  research:       ['Ongoing Projects','Completed Projects','Total Research Budget','International Journals','National Journals','Conference Papers'],
+  personnel:      ['Active Researchers','Lead Researchers','Co-Researchers','Extension Coordinators','Community Programs','Partner Communities'],
+  'faculty-load': ['Total Faculty with Load','1st Semester Average Units','2nd Semester Average Units','Average Teaching Units','Average Research Units','Average Extension Units','Average Admin Units'],
+  'student-load': ['Total Students with Load','Regular Load','Overload','Underload','Average GWA','Average Units Enrolled'],
+};
+
 let currentRptType    = null;
 let currentPreviewFmt = 'PDF';
 
-/**
- * Opens the report preview with the chosen format tab pre-selected.
- * Called when a format tag is clicked on a report card.
- * Does NOT export — the user must click "Export as" in the preview.
- */
-function quickGenerateReport(type, fmt) {
-  generateReport(type);
-  switchPreviewFormat(fmt, document.getElementById('fmt-tab-' + fmt));
-}
-
-/**
- * Opens the report preview panel. Defaults to PDF tab.
- * Does NOT log — logging only happens on export.
- */
 function generateReport(type) {
   currentRptType    = type;
   currentPreviewFmt = 'PDF';
   const meta = RPT_META[type] || {};
-
   document.getElementById('previewTitle').innerHTML = meta.title || '';
   document.getElementById('previewSub').textContent = meta.sub   || '';
 
-  // Populate all three format previews
+  const ay = (document.getElementById('sidebar-ay') || {}).textContent || 'AY \u2014\u2014';
   document.getElementById('reportContent-PDF').innerHTML   = RPT_DOC[type] || '';
-  document.getElementById('reportContent-Excel').innerHTML = buildExcelPreview(type);
-  document.getElementById('reportContent-CSV').textContent = buildCsvPreview(type);
+  document.getElementById('reportContent-Excel').innerHTML = (RPT_FIELDS[type] || []).map(r =>
+    `<div class="rpt-excel-row"><span class="rpt-excel-data" style="width:200px;">${r}</span><span class="rpt-excel-data muted" style="flex:1;">\u2014</span><span class="rpt-excel-data muted" style="width:120px;">${ay}</span></div>`
+  ).join('');
+  document.getElementById('reportContent-CSV').textContent =
+    ['Field,Value,Academic Year'].concat((RPT_FIELDS[type] || []).map(r => `${r},\u2014,${ay}`)).join('\n');
 
-  // Reset to PDF tab
   document.querySelectorAll('.rpt-fmt-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.rpt-fmt-preview').forEach(p => p.classList.remove('active'));
-  const pdfTab = document.getElementById('fmt-tab-PDF');
-  if (pdfTab) pdfTab.classList.add('active');
-  const pdfPanel = document.getElementById('rpt-fmt-PDF');
-  if (pdfPanel) pdfPanel.classList.add('active');
+  document.getElementById('fmt-tab-PDF')?.classList.add('active');
+  document.getElementById('rpt-fmt-PDF')?.classList.add('active');
   const hint = document.getElementById('rpt-fmt-hint');
   if (hint) hint.textContent = 'Previewing as PDF';
   updateExportBtn('PDF');
-
   document.getElementById('rpt-hub').style.display     = 'none';
   document.getElementById('rpt-preview').style.display = 'block';
 }
 
-/**
- * Switches the visible preview panel and updates the export button label.
- * @param {string} fmt - 'PDF' | 'Excel' | 'CSV'
- * @param {HTMLElement} btn - The tab button that was clicked
- */
+function quickGenerateReport(type, fmt) { generateReport(type); switchPreviewFormat(fmt, document.getElementById('fmt-tab-' + fmt)); }
+
 function switchPreviewFormat(fmt, btn) {
   currentPreviewFmt = fmt;
   document.querySelectorAll('.rpt-fmt-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   document.querySelectorAll('.rpt-fmt-preview').forEach(p => p.classList.remove('active'));
-  const panel = document.getElementById('rpt-fmt-' + fmt);
-  if (panel) panel.classList.add('active');
+  document.getElementById('rpt-fmt-' + fmt)?.classList.add('active');
   const hint = document.getElementById('rpt-fmt-hint');
   if (hint) hint.textContent = 'Previewing as ' + fmt;
   updateExportBtn(fmt);
 }
 
-/** Updates the Export button label to match the currently previewed format. */
 function updateExportBtn(fmt) {
   const btn = document.getElementById('rpt-export-btn');
   if (!btn) return;
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg> Export as ' + fmt;
+  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg> Export as ${fmt}`;
 }
 
-/** Called by the Export button — exports in the currently previewed format then returns to hub. */
-function exportCurrentFormat() {
-  exportReport(currentPreviewFmt);
-  closeReportPreview();
-}
+function exportCurrentFormat() { exportReport(currentPreviewFmt); closeReportPreview(); }
+function closeReportPreview()  { document.getElementById('rpt-preview').style.display = 'none'; document.getElementById('rpt-hub').style.display = 'block'; }
 
-/** Builds the Excel-style row HTML for a given report type. */
-function buildExcelPreview(type) {
-  const rows = RPT_FIELDS[type] || [];
-  const ay   = document.getElementById('sidebar-ay') ? document.getElementById('sidebar-ay').textContent : 'AY ——';
-  return rows.map(function(r) {
-    return '<div class="rpt-excel-row">'
-      + '<span class="rpt-excel-data" style="width:200px;">' + r + '</span>'
-      + '<span class="rpt-excel-data muted" style="flex:1;">—</span>'
-      + '<span class="rpt-excel-data muted" style="width:120px;">' + ay + '</span>'
-      + '</div>';
-  }).join('');
-}
-
-/** Builds the CSV text preview for a given report type. */
-function buildCsvPreview(type) {
-  const rows = RPT_FIELDS[type] || [];
-  const ay   = document.getElementById('sidebar-ay') ? document.getElementById('sidebar-ay').textContent : 'AY ——';
-  var lines  = rows.map(function(r) { return r + ',—,' + ay; });
-  return ['Field,Value,Academic Year'].concat(lines).join('\n');
-}
-
-/**
- * Records the export in the recent reports log and shows a toast.
- * Logs only to reportLog — NOT to the activity log, since report
- * exports are tracked separately in the Recent Reports tab.
- */
 function exportReport(fmt) {
   if (!currentRptType) return;
-  const meta  = RPT_META[currentRptType] || {};
-  const title = (meta.title || 'Report').replace(/&amp;/g, '&');
-  const now   = new Date();
-  reportLog.unshift({
-    title,
-    format: fmt,
-    date:   now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }),
-    time:   now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    status: 'Exported',
-  });
+  const title    = (RPT_META[currentRptType]?.title || 'Report').replace(/&amp;/g, '&');
+  const now      = new Date();
+  const dateStr  = now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+  const timeStr  = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const ay       = (document.getElementById('sidebar-ay') || {}).textContent || 'AY \u2014\u2014';
+  const filename = title.replace(/[^a-z0-9]+/gi, '_').replace(/^_|_$/g, '').toLowerCase() + '_' + now.toISOString().slice(0, 10);
+
+  reportLog.unshift({ title, format: fmt, date: dateStr, time: timeStr, status: 'Exported' });
   updateRptBadge();
+  if (typeof refreshDashboardMetrics === 'function') refreshDashboardMetrics();
   const lastEl = document.getElementById('rpt-last-gen');
   if (lastEl) lastEl.textContent = 'Just now';
-  // Call notify without logType/logCat/logDetail so it only shows the
-  // toast without adding an entry to the Data Entry activity log
+
+  _computeReportData(currentRptType).then(rows => {
+    if      (fmt === 'CSV')   _downloadCSV(filename + '.csv', rows, ay);
+    else if (fmt === 'Excel') _downloadExcel(filename + '.xlsx', rows, title, ay);
+    else                      _downloadPDF(title, rows, ay);
+  });
+
   notify('Exported as ' + fmt + '!');
 }
 
-/** Closes the report preview and returns to the reports hub. */
-function closeReportPreview() {
-  document.getElementById('rpt-preview').style.display = 'none';
-  document.getElementById('rpt-hub').style.display     = 'block';
+async function _computeReportData(type) {
+  const _all = async store => { try { return await store.getAll(); } catch(e) { return []; } };
+  const _avg = (recs, f) => { const v = recs.map(r => parseFloat(r[f])).filter(v => !isNaN(v)); return v.length ? (v.reduce((a,b)=>a+b,0)/v.length).toFixed(2) : '\u2014'; };
+  const _sum = (recs, f) => { const v = recs.map(r => parseFloat(r[f])).filter(v => !isNaN(v)); return v.length ? v.reduce((a,b)=>a+b,0).toLocaleString() : '\u2014'; };
+  const fields = RPT_FIELDS[type] || [];
+  let values = {};
+
+  if (type === 'faculty') {
+    const r = await _all(QNektDB.faculty);
+    values = {
+      'Total Faculty': r.length || '\u2014',
+      'Regular / Permanent': r.filter(x => x['Employment Status']==='Regular').length || '\u2014',
+      'Contractual / Part-time': r.filter(x => ['Contractual','Part-time'].includes(x['Employment Status'])).length || '\u2014',
+      'With Doctoral Degree': r.filter(x => (x['Highest Educational Attainment']||'').toLowerCase().includes('doctoral')).length || '\u2014',
+      "With Master's Degree": r.filter(x => (x['Highest Educational Attainment']||'').toLowerCase().includes('master')).length || '\u2014',
+      'Professor \u2013VI': r.filter(x => (x['Rank / Designation']||'').startsWith('Professor')).length || '\u2014',
+      'Associate Professor I\u2013V': r.filter(x => (x['Rank / Designation']||'').startsWith('Associate')).length || '\u2014',
+      'Assistant Professor I\u2013IV': r.filter(x => (x['Rank / Designation']||'').startsWith('Assistant')).length || '\u2014',
+      'Instructor I\u2013III': r.filter(x => (x['Rank / Designation']||'').startsWith('Instructor')).length || '\u2014',
+    };
+  } else if (type === 'student') {
+    const r = await _all(QNektDB.students);
+    values = {
+      'Total Students': r.length || '\u2014',
+      'Regular Students': r.filter(x => x['Enrollment Status']==='Regular').length || '\u2014',
+      'Irregular Students': r.filter(x => x['Enrollment Status']==='Irregular').length || '\u2014',
+      '1st Year': r.filter(x => x['Year Level']==='1st Year').length || '\u2014',
+      '2nd Year': r.filter(x => x['Year Level']==='2nd Year').length || '\u2014',
+      '3rd Year': r.filter(x => x['Year Level']==='3rd Year').length || '\u2014',
+      '4th Year & above': r.filter(x => ['4th Year','Graduate'].includes(x['Year Level'])).length || '\u2014',
+    };
+  } else if (type === 'scholarship') {
+    const r = await _all(QNektDB.scholarships);
+    values = {
+      'Total Active Grantees': r.filter(x => x['Status']==='Active').length || '\u2014',
+      'Full Grants': r.filter(x => x['Scholarship Type']==='Full Grant').length || '\u2014',
+      'Partial Grants': r.filter(x => x['Scholarship Type']==='Partial Grant').length || '\u2014',
+      'CHED': r.filter(x => (x['Scholarship Program']||'').includes('CHED')).length || '\u2014',
+      'DOST-SEI': r.filter(x => (x['Scholarship Program']||'').includes('DOST')).length || '\u2014',
+      'LGU / Local Government': r.filter(x => (x['Scholarship Program']||'').includes('LGU')).length || '\u2014',
+    };
+  } else if (type === 'research') {
+    const r = await _all(QNektDB.research);
+    const budget = _sum(r, 'Budget (PHP)');
+    values = {
+      'Ongoing Projects': r.filter(x => x['Status']==='Ongoing').length || '\u2014',
+      'Completed Projects': r.filter(x => x['Status']==='Completed').length || '\u2014',
+      'Total Research Budget': budget !== '\u2014' ? '\u20b1 ' + budget : '\u2014',
+      'International Journals': '\u2014', 'National Journals': '\u2014', 'Conference Papers': '\u2014',
+    };
+  } else if (type === 'personnel') {
+    const r = await _all(QNektDB.research);
+    values = {
+      'Active Researchers': r.length || '\u2014',
+      'Lead Researchers': r.filter(x => x['Role']==='Lead Researcher').length || '\u2014',
+      'Co-Researchers': r.filter(x => x['Role']==='Co-Researcher').length || '\u2014',
+      'Extension Coordinators': r.filter(x => x['Role']==='Extension Coordinator').length || '\u2014',
+      'Community Programs': '\u2014', 'Partner Communities': '\u2014',
+    };
+  } else if (type === 'faculty-load') {
+    const r = await _all(QNektDB.facultyLoad);
+    values = {
+      'Total Faculty with Load': r.length || '\u2014',
+      '1st Semester Average Units': _avg(r.filter(x => x['Semester']==='1st Semester'), 'Total Workload Units'),
+      '2nd Semester Average Units': _avg(r.filter(x => x['Semester']==='2nd Semester'), 'Total Workload Units'),
+      'Average Teaching Units': _avg(r, 'Teaching Units'),
+      'Average Research Units': _avg(r, 'Research Units'),
+      'Average Extension Units': _avg(r, 'Extension Units'),
+      'Average Admin Units': _avg(r, 'Admin Units'),
+    };
+  } else if (type === 'student-load') {
+    const r = await _all(QNektDB.studentLoad);
+    values = {
+      'Total Students with Load': r.length || '\u2014',
+      'Regular Load': r.filter(x => x['Load Status']==='Regular Load').length || '\u2014',
+      'Overload': r.filter(x => x['Load Status']==='Overload').length || '\u2014',
+      'Underload': r.filter(x => x['Load Status']==='Underload').length || '\u2014',
+      'Average GWA': _avg(r, 'GWA (Previous Semester)'),
+      'Average Units Enrolled': _avg(r, 'Total Units Enrolled'),
+    };
+  }
+
+  return fields.map(f => ({ field: f, value: String(values[f] !== undefined ? values[f] : '\u2014') }));
 }
 
-// Flat field list per report type — used to build Excel and CSV previews
-const RPT_FIELDS = {
-  faculty:     ['Total Faculty','Regular / Permanent','Contractual / Part-time','With Doctoral Degree','With Master\'s Degree','Professor I\u2013VI','Associate Professor I\u2013V','Assistant Professor I\u2013IV','Instructor I\u2013III'],
-  student:     ['Total Students','Regular Students','Irregular Students','1st Year','2nd Year','3rd Year','4th Year & above'],
-  scholarship: ['Total Active Grantees','Full Grants','Partial Grants','CHED','DOST-SEI','LGU / Local Government'],
-  research:    ['Ongoing Projects','Completed Projects','Total Research Budget','International Journals','National Journals','Conference Papers'],
-  personnel:   ['Active Researchers','Lead Researchers','Co-Researchers','Extension Coordinators','Community Programs','Partner Communities'],
-  'faculty-load': ['Total Faculty with Load','1st Semester Average Units','2nd Semester Average Units','Average Teaching Units','Average Research Units','Average Extension Units','Average Admin Units'],
-  'student-load': ['Total Students with Load','Regular Load','Overload','Underload','Average GWA','Average Units Enrolled'],
-};
+function _downloadCSV(filename, rows, ay) {
+  const lines = ['Field,Value,Academic Year'].concat(
+    rows.map(r => `"${r.field.replace(/"/g,'""')}","${String(r.value).replace(/"/g,'""')}","${ay}"`)
+  );
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: filename });
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
+function _downloadExcel(filename, rows, title, ay) {
+  function _build() {
+    const wsData = [['Field','Value','Academic Year']].concat(rows.map(r => [r.field, r.value, ay]));
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws['!cols'] = [{ wch: 38 }, { wch: 22 }, { wch: 16 }];
+    XLSX.utils.book_append_sheet(wb, ws, title.slice(0, 31));
+    XLSX.writeFile(wb, filename);
+  }
+  if (typeof XLSX !== 'undefined') { _build(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload = _build;
+  document.head.appendChild(s);
+}
 
-/**
- * Switches between the two tabs on the Reports page:
- * "Report Types" (the cards) and "Recent Reports" (the log).
- * @param {string} tab - 'types' | 'log'
- * @param {HTMLElement} btn - The tab button that was clicked
- */
+function _downloadPDF(title, rows, ay) {
+  const dateStr  = new Date().toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
+  const filename = title.replace(/[^a-z0-9]+/gi, '_').toLowerCase() + '_' + new Date().toISOString().slice(0, 10) + '.pdf';
+
+  function _buildPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc    = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageW  = doc.internal.pageSize.getWidth();
+    const margin = 18;
+    let y = margin;
+
+    doc.setFillColor(138, 21, 56); doc.rect(0, 0, pageW, 18, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');   doc.text('UPOU Q-Nekt Quality Assurance System', margin, 11);
+    doc.setFont('helvetica', 'normal'); doc.text(ay, pageW - margin, 11, { align: 'right' });
+
+    y = 30;
+    doc.setTextColor(30, 30, 30); doc.setFontSize(16); doc.setFont('helvetica', 'bold');
+    doc.text(title, margin, y); y += 7;
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(120, 120, 120);
+    doc.text('Generated: ' + dateStr + '   |   ' + ay, margin, y); y += 4;
+    doc.setDrawColor(138, 21, 56); doc.setLineWidth(0.5); doc.line(margin, y, pageW - margin, y); y += 8;
+
+    const colW1 = 110;
+    doc.setFillColor(138, 21, 56); doc.rect(margin, y, pageW - margin * 2, 8, 'F');
+    doc.setTextColor(255, 215, 0); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+    doc.text('FIELD', margin + 3, y + 5.5); doc.text('VALUE', margin + colW1 + 3, y + 5.5); y += 8;
+
+    rows.forEach((row, i) => {
+      const val = String(row.value);
+      if (y > 270) { doc.addPage(); y = margin; }
+      if (i % 2 === 0) { doc.setFillColor(252, 248, 249); doc.rect(margin, y, pageW - margin * 2, 8, 'F'); }
+      const grey = val === '\u2014' ? 160 : 30;
+      doc.setTextColor(50, 50, 50); doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
+      doc.text(row.field, margin + 3, y + 5.5);
+      doc.setTextColor(grey, grey, grey); doc.text(val, margin + colW1 + 3, y + 5.5);
+      doc.setDrawColor(230, 230, 230); doc.setLineWidth(0.2); doc.line(margin, y + 8, pageW - margin, y + 8);
+      y += 8;
+    });
+
+    const pages = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= pages; p++) {
+      doc.setPage(p); doc.setFontSize(7.5); doc.setTextColor(160, 160, 160); doc.setFont('helvetica', 'normal');
+      doc.text('Q-Nekt \u00b7 UPOU Quality Assurance System', margin, 290);
+      doc.text('Page ' + p + ' of ' + pages, pageW - margin, 290, { align: 'right' });
+    }
+    doc.save(filename);
+  }
+
+  function _printWindow() {
+    const tableRows = rows.map(row => {
+      const val = String(row.value);
+      return `<tr><td>${row.field}</td><td style="${val==='\u2014'?'color:#9ca3af;':'color:#111;font-weight:600;'}">${val}</td></tr>`;
+    }).join('');
+    const win = window.open('', '_blank', 'width=820,height=640');
+    if (!win) return;
+    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
+      <style>@media print{.no-print{display:none!important}}
+      body{font-family:Arial,sans-serif;margin:32px;color:#111;font-size:13px;}
+      h1{font-size:18px;margin:0 0 4px;}.sub{font-size:11px;color:#6b7280;margin-bottom:20px;}
+      table{width:100%;border-collapse:collapse;}
+      thead th{background:#8a1538;color:#fff;padding:7px 10px;text-align:left;font-size:11px;letter-spacing:.5px;}
+      td{padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:12px;}tr:nth-child(even) td{background:#fdf8f9;}
+      .toolbar{background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;gap:10px;align-items:center;}
+      .btn{padding:7px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;}
+      .btn-red{background:#8a1538;color:#fff;}.btn-gray{background:#e5e7eb;color:#374151;}</style>
+      </head><body>
+      <div class="toolbar no-print">
+        <button class="btn btn-red" onclick="window.print()">Print / Save as PDF</button>
+        <button class="btn btn-gray" onclick="window.close()">Close</button>
+        <span style="font-size:12px;color:#6b7280;margin-left:auto;">Choose "Save as PDF" in the print dialog for a PDF file.</span>
+      </div>
+      <h1>${title}</h1><div class="sub">${ay} \u00b7 Generated ${dateStr}</div>
+      <table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>${tableRows}</tbody></table>
+      </body></html>`);
+    win.document.close(); win.focus();
+  }
+
+  if (typeof window.jspdf !== 'undefined') { _buildPDF(); _printWindow(); return; }
+  const s = document.createElement('script');
+  s.src    = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  s.onload  = () => { _buildPDF(); _printWindow(); };
+  s.onerror = () => { notify('PDF library failed to load \u2014 opening print view only.'); _printWindow(); };
+  document.head.appendChild(s);
+}
+
 function switchRptTab(tab, btn) {
   document.querySelectorAll('#page-reports .de-hub-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -766,18 +593,16 @@ function switchRptTab(tab, btn) {
   if (tab === 'log') renderReportLog();
 }
 
-/** Updates the numeric badge on the "Recent Reports" tab button. */
 function updateRptBadge() {
   const badge = document.getElementById('rpt-badge');
-  if (!badge) return;
-  badge.textContent   = reportLog.length > 99 ? '99+' : reportLog.length;
-  badge.style.display = reportLog.length > 0 ? 'inline-block' : 'none';
+  if (badge) {
+    badge.textContent   = reportLog.length > 99 ? '99+' : reportLog.length;
+    badge.style.display = reportLog.length > 0 ? 'inline-block' : 'none';
+  }
+  const el = document.getElementById('rpt-metric-count');
+  if (el) el.textContent = reportLog.length;
 }
 
-/**
- * Re-renders the recent reports list based on the current filters.
- * Shows an empty-state message if there are no matching entries.
- */
 function renderReportLog() {
   const list  = document.getElementById('rpt-log-list');
   const empty = document.getElementById('rpt-log-empty');
@@ -785,18 +610,12 @@ function renderReportLog() {
 
   const typeFilter = (document.getElementById('rpt-log-filter')?.value || '').toLowerCase();
   const fmtFilter  = (document.getElementById('rpt-fmt-filter')?.value  || '').toLowerCase();
-
-  const filtered = reportLog.filter(r =>
+  const filtered   = reportLog.filter(r =>
     (!typeFilter || r.title.toLowerCase().includes(typeFilter)) &&
     (!fmtFilter  || r.format.toLowerCase() === fmtFilter)
   );
 
-  if (filtered.length === 0) {
-    empty.style.display = 'flex';
-    list.innerHTML = '';
-    return;
-  }
-
+  if (filtered.length === 0) { empty.style.display = 'flex'; list.innerHTML = ''; return; }
   empty.style.display = 'none';
   list.innerHTML = filtered.map(r => `
     <div class="act-item">
@@ -805,47 +624,21 @@ function renderReportLog() {
       </div>
       <div class="act-body">
         <div class="act-title">${r.title}</div>
-        <div class="act-meta">
-          <span>Format: ${r.format}</span>
-          <span>${r.date} · ${r.time}</span>
-        </div>
+        <div class="act-meta"><span>Format: ${r.format}</span><span>${r.date} \u00b7 ${r.time}</span></div>
       </div>
       <span class="act-type-pill create">${r.status}</span>
     </div>`).join('');
 }
 
-/** Clears all entries from the recent reports log. */
-function clearReportLog() {
-  reportLog.length = 0;
-  updateRptBadge();
-  renderReportLog();
-}
+function clearReportLog() { reportLog.length = 0; updateRptBadge(); renderReportLog(); }
 
 
-/* ================================================================
-   MODULE 9 · NOTIFICATIONS
-   ================================================================
-   A small toast notification appears at the bottom-right of the
-   screen after any significant user action (save, import, export,
-   report generation). It disappears automatically after 3.2 seconds.
-   If activity logging details are provided, the action is also
-   recorded in the activity log automatically.
-   ================================================================ */
+// --- 9. NOTIFICATIONS ---
 
-/**
- * Shows a toast notification and optionally logs the action.
- * @param {string} msg         - The message to display in the toast
- * @param {string} [logType]   - Activity type (e.g. 'create', 'export')
- * @param {string} [logCat]    - Data category (e.g. 'Faculty Information')
- * @param {string} [logDetail] - Full description of what happened
- */
 function notify(msg, logType, logCat, logDetail) {
   const n = document.getElementById('notif');
   document.getElementById('notif-text').textContent = msg;
   n.classList.add('show');
-  // Auto-dismiss after 3.2 seconds
   setTimeout(() => n.classList.remove('show'), 3200);
-
-  // Log the action if details were provided
   if (logType && logCat && logDetail) logActivity(logType, logCat, logDetail);
 }
