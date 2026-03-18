@@ -2,7 +2,7 @@
 
 A browser-based data collection and report generation system for the Quality Assurance Office of the University of the Philippines Open University (UPOU).
 
-To run the system, open `index.html` in any modern browser.
+To run the system, open `index.html` in any modern browser. No server or installation required.
 
 ---
 
@@ -13,11 +13,14 @@ To run the system, open `index.html` in any modern browser.
 | `index.html` | Entry point. Loads all scripts and defines the page slots. |
 | `styles.css` | All styling — colours, layout, and responsive breakpoints. |
 | `shell.js` | HTML templates for the header, navigation bar, sidebar, and toast notification. |
-| `app.js` | All JavaScript logic split into 9 modules (see below). |
-| `loader.js` | Injects the HTML templates into the page, then starts the app. |
+| `app.js` | All UI logic: navigation, data entry, reports, activity log, notifications. |
+| `db-crypto.js` | AES-256-GCM encryption using the browser's Web Crypto API. |
+| `db.js` | IndexedDB database — six data stores, audit log, export/import. |
+| `db-integration.js` | Connects the UI to the database: login modal, form save buttons, table rendering, metrics. |
+| `loader.js` | Injects HTML templates into the page, then starts the app. |
 | `pages/dashboard.js` | Dashboard page HTML |
-| `pages/data-entry.js` | Data Entry page HTML (entry forms, database, activity log) |
-| `pages/reports.js` | Reports page HTML (report cards, format preview, recent reports log) |
+| `pages/data-entry.js` | Data Entry page HTML |
+| `pages/reports.js` | Reports page HTML |
 | `pages/historical.js` | Historical Data page HTML |
 
 ---
@@ -26,32 +29,55 @@ To run the system, open `index.html` in any modern browser.
 
 | Page | What it does |
 |------|-------------|
-| **Dashboard** | Overview with metric cards, a data-flow diagram, collection progress bars, and recent activity. |
-| **Data Entry** | Three-tab hub: enter data by category, view the database (6 tables), or check the activity log. Each entry card has quick access to its database table and report. |
-| **Reports** | Seven report types matching all data categories. Each card has a format preview (PDF / Excel / CSV) and direct access to the corresponding data entry form. Recent exports are logged. |
-| **Historical Data** | Data Repository Summary, metric cards, four area charts (Student, Faculty, Research, Retention), and per-tab summary cards. |
+| **Dashboard** | Live metric cards (students, faculty, researchers, reports generated), data flow diagram, repository summary tiles, and recent activity feed. |
+| **Data Entry** | Three-tab hub: enter data by category, view/search/filter the database (6 tables), or check the session activity log. |
+| **Reports** | Seven report types. Each has a PDF/Excel/CSV preview and exports a real file with live data from the database. |
+| **Historical Data** | Data repository summary, metric cards, and four bar charts (Student, Faculty, Research, Retention) drawn from stored records. |
+
+---
+
+## Authentication & Encryption
+
+- On first load, users create a **username and password**. Returning users log in with those credentials.
+- Each user's password is run through **PBKDF2** (310,000 iterations) to derive an **AES-256-GCM** encryption key, cached in memory only.
+- Every database record is encrypted before it is written to IndexedDB. Only the primary key (e.g. `facultyId`) is stored as plain text.
+- Each user has isolated encryption keys in `localStorage` — one user cannot read another's data.
+- The key is cleared from memory on logout. The data in IndexedDB is unreadable without the correct credentials.
+
+> **Note:** Data is stored in the browser on the local machine. Clearing browser data will wipe the database. Use the **Export Backup** button to save an encrypted `.json` backup file.
+
+---
+
+## Database Stores
+
+| Store | Key Field | Contents |
+|-------|-----------|---------|
+| `faculty` | `facultyId` | Faculty information records |
+| `students` | `studentId` | Student information records |
+| `research` | `personnelId` | Research & extension records |
+| `scholarships` | `scholarshipId` | Scholarship records |
+| `faculty_load` | auto | Faculty academic load records |
+| `student_load` | auto | Student academic load records |
+| `audit_log` | auto | Encrypted log of all creates, updates, deletes, and logins |
 
 ---
 
 ## JavaScript Modules (`app.js`)
 
-| Module | Functions | What it does |
-|--------|-----------|-------------|
-| **1 · Data Source Status** | `setSourceStatus(id, state)` | Updates the connection dot and label in the sidebar for a given source. |
-| **2 · Initialisation** | `initQNekt()` | Runs on page load. Sets up source dots and computes the current academic year. |
-| **3 · Navigation** | `showPage(id)` | Switches the visible page, syncs the nav bar and sidebar, and resets each page to its first tab. |
-| **4 · Data Panel Tabs** | `showDataTab(tab, btn)` | Switches sub-panels inside a data entry form. |
-| **5 · Database** | `showDbTab(tab, btn)` `viewDbRecords(tab)` `dbQuickEnter()` `dbQuickReport()` | Switches between 6 database tables and updates status filters. `dbQuickEnter` and `dbQuickReport` open the matching data entry form or report from the database toolbar. |
-| **6 · Activity Log** | `logActivity()` `renderActivity()` `clearActivityLog()` | Records every save and import as a timestamped entry and renders the filtered list. |
-| **7 · Data Entry Hub** | `switchHubTab()` `openDataEntry()` `closeDataEntry()` `switchHistTab()` | Controls the Data Entry hub tabs, opens/closes data entry forms, and switches Historical Data tabs. |
-| **8 · Reports** | `generateReport()` `quickGenerateReport()` `switchPreviewFormat()` `exportCurrentFormat()` `exportReport()` `closeReportPreview()` `renderReportLog()` `clearReportLog()` `goToReport()` `goToDataEntry()` | Full report lifecycle — preview with PDF/Excel/CSV tabs, export (logs to Recent Reports only), and cross-page navigation shortcuts. |
-| **9 · Notifications** | `notify(msg, logType, logCat, logDetail)` | Shows a brief toast at the bottom-right. Logs to the activity log only if type/category/detail are provided. |
+| Module | What it does |
+|--------|-------------|
+| **1 · Init** | `initQNekt()` — runs on page load, sets the current academic year in the sidebar. |
+| **2 · Navigation** | `showPage(id)` — switches the visible page and syncs the nav bar and sidebar. |
+| **3 · Data Tabs** | `showDataTab(tab, btn)` — switches sub-panels inside a data entry form. |
+| **4 · Database** | `showDbTab()`, `viewDbRecords()`, `dbQuickEnter()`, `dbQuickReport()` — database table switching and toolbar shortcuts. |
+| **5 · Activity Log** | `logActivity()`, `renderActivity()`, `clearActivityLog()` — records saves/imports and renders the filtered activity list. |
+| **6 · Data Entry Hub** | `switchHubTab()`, `openDataEntry()`, `closeDataEntry()`, `switchHistTab()` — hub tab control and form open/close. |
+| **7 · Reports** | Full report lifecycle — preview, export (PDF download via jsPDF, Excel via SheetJS, CSV), and recent reports log. All exports include live data computed from the database. |
+| **8 · Notifications** | `notify(msg, logType, logCat, logDetail)` — shows a brief toast. Logs to the activity log if type/category/detail are provided. |
 
 ---
 
 ## Colour Palette
-
-Defined as CSS variables in `styles.css` — change one variable to update the colour everywhere.
 
 | Variable | Value | Usage |
 |----------|-------|-------|
@@ -60,22 +86,19 @@ Defined as CSS variables in `styles.css` — change one variable to update the c
 | `--bg3` | `#1a1c23` | Inputs and deep backgrounds |
 | `--header` | `#8a1538` | UPOU maroon — headers, primary buttons |
 | `--gold` | `#f6ac1d` | Accent gold — active states, highlights |
-| `--green2` | `#1a8c32` | Success green — saved, connected |
+| `--green2` | `#1a8c32` | Success green |
 | `--muted` | `#a0a4b5` | Labels and placeholder text |
 
 ---
 
 ## Backend Integration Checklist
 
-When connecting a real backend, update these areas:
+The current system stores all data locally in the browser. When connecting a real server backend:
 
-- [ ] Metric card values on the Dashboard and Historical Data pages
-- [ ] Database table records (all 6 tables in `pages/data-entry.js`)
-- [ ] Save and Import button handlers in data entry forms
-- [ ] Report document fields in `RPT_DOC` and `RPT_FIELDS` (`app.js`)
-- [ ] Export file generation in `exportReport()` (`app.js`)
-- [ ] Historical Data chart datasets in `pages/historical.js`
-- [ ] Data Repository Summary values in `pages/historical.js`
+- [ ] Replace `db.js` store calls with `fetch()` calls to your API endpoints
+- [ ] Replace the login modal in `db-integration.js` with server-side session/JWT authentication
+- [ ] Keep or adapt `db-crypto.js` for end-to-end encryption of sensitive fields before sending to the server
+- [ ] Update `_computeReportData()` in `app.js` to pull from the API instead of IndexedDB
 
 ---
 
