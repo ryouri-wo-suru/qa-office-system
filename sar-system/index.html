@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Q-Nekt | SAR System — UPOU Quality Assurance</title>
+
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- SAR Builder needs XLSX for file parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <script src="shell.js"></script>
+  <script src="pages/sar-dashboard.js"></script>
+  <script src="pages/sar-build.js"></script>
+  <script src="pages/sar-review.js"></script>
+
+  <script src="app.js"></script>
+  <script src="loader.js"></script>
+
+  <script src="db-crypto.js"></script>
+  <script src="db.js"></script>
+  <script src="db-integration.js"></script>
+</head>
+<body>
+
+  <div id="slot-header"></div>
+  <div id="slot-nav"></div>
+
+  <div class="app-body">
+    <div id="slot-sidebar"></div>
+    <main class="main">
+      <div id="slot-sar-dashboard"></div>
+      <div id="slot-sar-build"></div>
+      <div id="slot-sar-review"></div>
+    </main>
+  </div>
+
+  <div id="slot-notif"></div>
+
+</body>
+</html>
