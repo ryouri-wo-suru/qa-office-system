@@ -7,7 +7,7 @@ const QNektDB = (() => {
   'use strict';
 
   const DB_NAME    = 'QNektDB';
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
 
   // Object store definitions: key field + whether it auto-increments
   const STORES = {
@@ -17,6 +17,7 @@ const QNektDB = (() => {
     scholarships: { key: 'scholarshipId', autoInc: false },
     student_load: { key: 'id',            autoInc: true  },
     faculty_load: { key: 'id',            autoInc: true  },
+    sar_drafts:   { key: 'draftId',       autoInc: false },
     audit_log:    { key: 'id',            autoInc: true  },
   };
 
@@ -228,12 +229,12 @@ const QNektDB = (() => {
 
   // --- Utilities ---
 
-  // Total record count across all data stores (excludes audit_log).
+  // Total record count across all data stores (excludes audit_log and sar_drafts).
   async function totalRecords() {
     await open();
     let total = 0;
     for (const name of Object.keys(STORES)) {
-      if (name === 'audit_log') continue;
+      if (name === 'audit_log' || name === 'sar_drafts') continue;
       total += await _req(_tx(name).objectStore(name).count());
     }
     return total;
@@ -258,6 +259,7 @@ const QNektDB = (() => {
     scholarships: _makeStore('scholarships'),
     studentLoad: _makeStore('student_load'),
     facultyLoad: _makeStore('faculty_load'),
+    sarDrafts: _makeStore('sar_drafts'),
     audit,
     totalRecords, storeCounts,
     exportAll, importAll, reEncrypt, wipeAll,

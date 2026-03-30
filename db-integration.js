@@ -342,6 +342,11 @@ const TABLE_CONFIG = {
     cols:   ['Scholarship ID','Student Name','Student ID','Scholarship Program','Type','Grant Amount (PHP)','Academic Year','Status'],
     rowMap: r => [r['Scholarship ID'], r['Student Name'], r['Student ID'], r['Scholarship Program'], r['Scholarship Type'], r['Grant Amount (PHP)'], r['Academic Year'], r['Status']],
   },
+  sar: {
+    store:  () => QNektDB.sarDrafts,
+    cols:   ['Draft ID','Programme','Saved At'],
+    rowMap: r => [r['draftId'], r['programme'], r['savedAt'] ? new Date(r['savedAt']).toLocaleString() : '—'],
+  },
 };
 
 // Updates only the <tbody> of the existing table — the styled <thead> is preserved.
@@ -378,7 +383,7 @@ async function refreshDbTable(tabKey) {
   }).join('');
 }
 
-// Refreshes all six database table tbodies.
+// Refreshes all database table tbodies including SAR drafts.
 async function refreshAllDbTables() {
   if (!QNektCrypto.isUnlocked()) return;
   for (const key of Object.keys(TABLE_CONFIG)) {
@@ -430,6 +435,7 @@ async function refreshDashboardMetrics() {
     setValue('repo-count-scholarships', counts.scholarships || 0);
     setValue('repo-count-faculty-load', counts.faculty_load || 0);
     setValue('repo-count-student-load', counts.student_load || 0);
+    setValue('repo-count-sar-drafts',   counts.sar_drafts   || 0);
 
     // Total label in card header
     const totalEl = document.getElementById('dash-repo-total');
@@ -471,6 +477,7 @@ async function refreshDashboardMetrics() {
       'de-stat-student_load':  counts.student_load,
       'de-stat-research':      counts.research,
       'de-stat-scholarships':  counts.scholarships,
+      'de-stat-sar_drafts':    counts.sar_drafts,
     };
     for (const [id, val] of Object.entries(cardMap)) {
       const el = document.getElementById(id);
@@ -672,6 +679,7 @@ const TAB_STATUS_FIELD = {
   sload: r => r['Load Status'],
   res:   r => r['Status'],
   sch:   r => r['Status'],
+  sar:   r => null,
 };
 
 // Status badge colour mapping

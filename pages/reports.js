@@ -74,7 +74,25 @@ const REPORTS_HTML = /* html */`
             </div>
           </div>
 
-          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:1rem;">Report Types</div>
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;">Self-Assessment Report</div>
+          </div>
+
+          <!-- Create SAR Section -->
+          <div style="background:linear-gradient(135deg,rgba(138,21,56,0.18) 0%,rgba(138,21,56,0.08) 100%);border:1px solid rgba(138,21,56,0.3);border-radius:10px;padding:18px 20px;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">Create Self-Assessment Report (SAR)</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.5;">Generate a comprehensive self-assessment report for quality accreditation purposes.</div>
+            </div>
+            <button class="btn btn-primary" style="font-size:12px;padding:9px 20px;display:flex;align-items:center;gap:7px;white-space:nowrap;flex-shrink:0;" onclick="openSARPage()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+              Create SAR
+            </button>
+          </div>
+
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;">Report Types</div>
+          </div>
 
           <!-- Report cards grid -->
           <div class="rpt-cards">
@@ -464,4 +482,65 @@ const REPORTS_HTML = /* html */`
       </div><!-- /rpt-preview -->
 
     </div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE: SAR (SELF-ASSESSMENT REPORT)
+     ════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-sar">
+
+  <!-- BACK HEADER -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.4rem;flex-wrap:wrap;">
+    <button class="btn btn-ghost" style="padding:6px 14px;" onclick="closeSARPage()">← Back</button>
+    <div>
+      <div class="page-hero-title" style="font-size:20px;">Self-Assessment Report (SAR)</div>
+      <div class="page-hero-sub" style="margin-top:2px;">AUN-QA v4 Criteria Evaluation — Programme Level</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-ghost" style="font-size:12px;padding:7px 14px;display:flex;align-items:center;gap:6px;" onclick="saveSARDraft()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 12 7 12 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save Draft
+      </button>
+      <button class="btn btn-primary" style="font-size:12px;padding:7px 16px;display:flex;align-items:center;gap:6px;" onclick="exportSAR()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+        Export PDF
+      </button>
+    </div>
+  </div>
+  <div class="deco-bar"></div>
+
+  <!-- Programme Info Bar -->
+  <div style="background:rgba(138,21,56,0.12);border:1px solid rgba(138,21,56,0.3);border-radius:10px;padding:1rem 1.4rem;margin-bottom:1.6rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+    <div>
+      <div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Degree Programme</div>
+      <input id="sar-programme" type="text" placeholder="e.g. Master in Public Management" style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.15);color:var(--text);font-size:14px;font-weight:600;outline:none;min-width:220px;padding-bottom:2px;" />
+    </div>
+    <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);flex-shrink:0;"></div>
+    <div>
+      <div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Faculty</div>
+      <input id="sar-faculty" type="text" placeholder="e.g. Faculty of Information and Communication Studies" style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.15);color:var(--text);font-size:13px;font-weight:500;outline:none;min-width:200px;padding-bottom:2px;" />
+    </div>
+    <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);flex-shrink:0;"></div>
+    <div>
+      <div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Academic Year</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text);" id="sar-ay">—</div>
+    </div>
+    <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);flex-shrink:0;"></div>
+    <div>
+      <div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Date Prepared</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text);" id="sar-date">—</div>
+    </div>
+    <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);flex-shrink:0;"></div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+      <div style="font-size:11px;color:var(--muted);">Overall Readiness:</div>
+      <span id="sar-overall-badge" style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(160,164,181,0.15);color:var(--muted);">Calculating…</span>
+    </div>
+  </div>
+
+  <!-- Criterion Tabs -->
+  <div id="sar-criterion-tabs" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1.4rem;"></div>
+
+  <!-- Criterion Content Panels -->
+  <div id="sar-criterion-panels"></div>
+
+</div><!-- /page-sar -->
 `;

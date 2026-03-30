@@ -89,7 +89,7 @@ const SIDEBAR_HTML = /* html */`
         </svg>
       </div>
       <div class="sidebar-brand-text">
-        <div class="sidebar-brand-name">Q-Nekt</div>
+        <div class="sidebar-brand-name">Quality Assurance System</div>
         <div class="sidebar-brand-sub">Quality Assurance Office</div>
       </div>
     </div>

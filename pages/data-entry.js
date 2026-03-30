@@ -341,7 +341,7 @@ const DATA_ENTRY_HTML = /* html */`
           </div>
           <div class="deco-bar"></div>
 
-          <!-- 6 tabs matching the Data Entry cards -->
+          <!-- 6 tabs matching the Data Entry cards + SAR Drafts -->
           <div class="tabs-local">
             <button class="tab-btn active" onclick="showDbTab('fac',this)">Faculty Info</button>
             <button class="tab-btn" onclick="showDbTab('stu',this)">Student Info</button>
@@ -349,6 +349,7 @@ const DATA_ENTRY_HTML = /* html */`
             <button class="tab-btn" onclick="showDbTab('sload',this)">Student Load</button>
             <button class="tab-btn" onclick="showDbTab('res',this)">Research</button>
             <button class="tab-btn" onclick="showDbTab('sch',this)">Scholarships</button>
+            <button class="tab-btn" onclick="showDbTab('sar',this)">SAR Drafts</button>
           </div>
 
           <!-- Search + Status filter + Quick actions -->
@@ -416,6 +417,21 @@ const DATA_ENTRY_HTML = /* html */`
             <table>
               <thead><tr><th>Scholarship ID</th><th>Student Name</th><th>Student ID</th><th>Scholarship Program</th><th>Type</th><th>Grant Amount (PHP)</th><th>Academic Year</th><th>Status</th><th></th></tr></thead>
               <tbody><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No records found. Add entries through the Data Entry tab.</td></tr></tbody>
+            </table>
+          </div>
+
+          <!-- SAR Drafts -->
+          <div class="table-wrap" id="db-sar" style="display:none;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px;">
+              <div style="font-size:12px;color:var(--muted);">Saved SAR drafts are encrypted and stored locally. Use the Reports tab to open and continue editing.</div>
+              <button class="btn btn-primary" style="font-size:12px;padding:6px 14px;" onclick="showPage('reports');setTimeout(()=>openSARPage(),100)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                New SAR
+              </button>
+            </div>
+            <table>
+              <thead><tr><th>Draft ID</th><th>Programme</th><th>Last Saved</th><th></th></tr></thead>
+              <tbody><tr><td colspan="3" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13px;">No SAR drafts saved yet. Create a SAR from the Reports tab.</td></tr></tbody>
             </table>
           </div>
 

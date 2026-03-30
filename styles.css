@@ -116,7 +116,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 1.1rem 1rem 1rem; }
 .sidebar-brand-logo { width: 36px; height: 36px; border-radius: 9px; background: rgba(138,21,56,0.25); display: flex; align-items: center; justify-content: center; color: var(--header2); flex-shrink: 0; }
 .sidebar-brand-logo svg { width: 18px; height: 18px; }
-.sidebar-brand-name { font-size: 19px; font-weight: 700; color: var(--text); line-height: 1.2; }
+.sidebar-brand-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
 .sidebar-brand-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 500; margin-top: 1px; }
 .sidebar-ay-block { margin-top: auto; border-top: 1px solid var(--border2); }
 .sidebar-ay-inner { display: flex; align-items: center; gap: 10px; padding: 0.9rem 1rem; }
@@ -475,14 +475,100 @@ tbody tr:hover td { background: rgba(246,172,29,0.03); }
 /* Row wrapper for report card bottom buttons — Generate Report fills space, Enter Data is icon */
 .rpt-card-actions { display:flex; align-items:center; gap:8px; margin-top:auto; }
 .rpt-card-actions .rpt-btn-generate { flex:1; width:auto; margin-top:0; }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg3); }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(246,172,29,0.4); }
-
-
 /* ----------------------------------------------------------------
-   [6] SCROLLBAR
+   [5b] SAR — Self-Assessment Report Page
+   ---------------------------------------------------------------- */
+/* Criterion tab strip */
+.sar-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border2);
+  background: var(--bg2); color: var(--muted); font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all 0.18s; white-space: nowrap; font-family: 'DM Sans', sans-serif;
+}
+.sar-tab:hover { border-color: rgba(138,21,56,0.4); color: var(--text); }
+.sar-tab.active { background: var(--header); border-color: var(--header); color: #fff; font-weight: 600; }
+
+/* Criterion panel wrapper */
+.sar-criterion-panel {
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px; padding: 1.6rem;
+}
+
+/* Section block within panel */
+.sar-section-block {
+  margin-bottom: 1.6rem; padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--border2);
+}
+.sar-section-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.sar-section-heading {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px;
+  color: var(--muted); margin-bottom: 0.9rem;
+}
+
+.sar-readiness-summary { font-size: 14px; font-weight: 600; }
+
+/* The coverage-check table */
+.sar-table { border: 1px solid var(--border2); border-radius: 8px; overflow: hidden; }
+
+.sar-table-header {
+  display: flex; background: var(--header);
+  padding: 9px 14px; gap: 10px;
+}
+.sar-table-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-bottom: 1px solid var(--border2); transition: background 0.15s;
+}
+.sar-table-row:last-child { border-bottom: none; }
+.sar-table-row:hover { background: rgba(255,255,255,0.02); }
+
+.sar-col-req          { flex: 0 0 34%; display: flex; align-items: flex-start; gap: 8px; min-width: 0; }
+.sar-col-status       { flex: 0 0 16%; }
+.sar-col-justification{ flex: 1; min-width: 0; }
+
+.sar-table-header .sar-col-req,
+.sar-table-header .sar-col-status,
+.sar-table-header .sar-col-justification {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.6px; color: #fff;
+}
+.sar-table-header .sar-col-status { color: #ffd700; }
+
+.sar-req-id    { font-size: 11px; font-weight: 700; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
+.sar-req-label { font-size: 13px; color: var(--text); line-height: 1.4; }
+
+/* Status select */
+.sar-status-select {
+  width: 100%; border-radius: 6px; border: 1px solid transparent;
+  padding: 5px 8px; font-size: 12px; font-weight: 600; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; outline: none; transition: all 0.15s;
+}
+.sar-status-met     { background: rgba(14,96,33,0.25);  color: #4caf71; border-color: rgba(14,96,33,0.4); }
+.sar-status-partial { background: rgba(246,172,29,0.15); color: var(--gold); border-color: rgba(246,172,29,0.3); }
+.sar-status-notmet  { background: rgba(220,60,60,0.12);  color: #e05a78; border-color: rgba(220,60,60,0.25); }
+.sar-status-select option { background: var(--bg2); color: var(--text); }
+
+/* Justification input */
+.sar-justification-input {
+  width: 100%; background: transparent; border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: var(--text); font-size: 13px; font-family: 'DM Sans', sans-serif;
+  padding: 4px 2px; outline: none; transition: border-color 0.15s;
+}
+.sar-justification-input:focus { border-bottom-color: var(--gold); }
+.sar-justification-input::placeholder { color: var(--muted); font-size: 12px; }
+
+/* Narrative textarea */
+.sar-narrative {
+  width: 100%; min-height: 110px; background: var(--bg3);
+  border: 1px solid var(--border2); border-radius: 8px;
+  color: var(--text); font-size: 13px; font-family: 'DM Sans', sans-serif;
+  padding: 12px 14px; outline: none; resize: vertical; line-height: 1.6;
+  transition: border-color 0.15s;
+}
+.sar-narrative:focus { border-color: rgba(138,21,56,0.5); }
+.sar-narrative::placeholder { color: var(--muted); font-size: 12px; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
    ----------------------------------------------------------------
    Replaces the browser default scrollbar with a slim dark one
    that matches the overall dark theme. The thumb turns gold on
